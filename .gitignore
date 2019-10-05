@@ -1,0 +1,7 @@
+# Python Binaries
+*.pyc
+__pycache__/
+
+#IntelliJ
+.idea/
+
