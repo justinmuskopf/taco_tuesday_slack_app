@@ -4,7 +4,7 @@ class Text:
         self.text_type = 'mrkdwn' if markdown_enabled else 'plain_text'
         self.text = text
 
-    def get_text(self):
+    def get_text(self) -> {}:
         return {
             'text': self.text,
             'type': self.text_type

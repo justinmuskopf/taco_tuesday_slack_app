@@ -10,5 +10,5 @@ class TacoOrderModal(Modal):
         self.blocks = self._init_blocks(tacos)
 
     @staticmethod
-    def _init_blocks(tacos: [Taco]) -> [TacoBlock]:
-        return [TacoBlock(taco).get_block() for taco in tacos]
+    def _init_blocks(tacos) -> [TacoBlock]:
+        return [TacoBlock(tacos[taco]).get_block() for taco in tacos]
