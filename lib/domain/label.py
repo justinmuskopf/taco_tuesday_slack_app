@@ -6,7 +6,7 @@ class Label(Text):
         super().__init__(text, markdown_enabled)
         self.emoji_supported = emoji_supported
 
-    def get_label(self):
+    def get_label(self) -> {}:
         label = super().get_text()
         label['emoji'] = self.emoji_supported
 
