@@ -1,5 +1,4 @@
 from lib.api.taco_tuesday_api_handler import TacoTuesdayApiHandler
-from lib.domain.taco import Taco
 
 
 class IndividualOrder:

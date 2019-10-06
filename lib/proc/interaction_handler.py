@@ -1,5 +1,4 @@
-import json
-import os
+from loguru import logger
 
 from slack import WebClient
 
@@ -17,15 +16,15 @@ class InteractionHandler:
         self.api_handler = TacoTuesdayApiHandler()
 
     def _handle_action(self, action: {}):
-        print('Handling action...')
+        logger.debug('Handling action...')
         self.action_handler.handle(action)
 
     def _handle_view(self, view: {}):
-        print('Handling view...')
+        logger.debug('Handling view...')
         self.view_handler.handle(view)
 
     def handle_interaction(self, interaction: {}):
-        print('Handling Interaction!')
+        logger.debug('Handling Interaction!')
         try:
             if self.action_handler.is_action_interaction(interaction):
                 self._handle_action(interaction)

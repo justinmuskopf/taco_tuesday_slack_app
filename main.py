@@ -1,7 +1,8 @@
-from flask import Flask, request, make_response, Response, jsonify
+from flask import Flask, request, make_response, jsonify
 import os
 import pprint
 import json
+from loguru import logger
 
 from lib.api.taco_tuesday_api_handler import TacoTuesdayApiHandler
 from lib.proc.interaction_handler import InteractionHandler
@@ -21,7 +22,7 @@ TACO_ORDERS = {}
 
 def get_arg(request, key):
     arg = request.form.get(key)
-    print(key,':',arg)
+    logger.debug(key,':',arg)
 
     return arg
 
@@ -41,7 +42,7 @@ def order_slash_command():
 
 @app.route("/slack/interact", methods=["POST"])
 def message_actions():
-    print('At endpoint!')
+    logger.debug('At endpoint!')
 
     # Parse the request payload
     payload = json.loads(request.form["payload"])
@@ -50,7 +51,7 @@ def message_actions():
 
     response = IH.handle_interaction(payload)
     if response: response = jsonify(response)
-    print("Response: ", response)
+    logger.debug("Response: ", response)
 
     return response
 

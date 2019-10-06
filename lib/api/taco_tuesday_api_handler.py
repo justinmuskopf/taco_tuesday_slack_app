@@ -1,8 +1,8 @@
 from lib.domain.taco import Taco
+from loguru import logger
 import os
 import requests
 import json
-
 
 class TacoTuesdayApiHandler:
     API_BASE_URL = os.environ['TT_BASE_API_URL']
@@ -21,9 +21,9 @@ class TacoTuesdayApiHandler:
 
         # TODO: catch JSON error
         tacos = json.loads(r.content)
-        print("Taco(s) received from API: ", tacos)
+        logger.debug("Taco(s) received from API: ", tacos)
         for taco in tacos:
-            print(f'Loading taco: {taco}')
+            logger.debug(f'Loading taco: {taco}')
             taco_type = taco['type']
             cls.TACOS[taco_type] = Taco(taco_type=taco_type, price=taco['price'])
 

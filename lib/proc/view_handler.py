@@ -22,12 +22,12 @@ class ViewHandler:
 
     def handle_submission(self, view_submission: {}):
         order = self.view_parser.parse_submission_into_individual_order(view_submission)
-        print(order.tacos)
+        logger.debug(order.tacos)
 
 
 
     def handle(self, view: {}):
-        print(f'View type: {view["type"]}')
+        logger.debug(f'View type: {view["type"]}')
         if view['type'] == 'view_submission': self.handle_submission(view)
 
         #taco_order = TACO_ORDERS[user_id]
@@ -41,7 +41,7 @@ class ViewHandler:
 
     def send_new_taco_order_modal(self, trigger_id: str):
         # Show the ordering dialog to the user
-        print(self.TACOS)
+        logger.debug(self.TACOS)
         open_dialog = self.slack_client.views_open(trigger_id=trigger_id,
                                               view=TacoOrderModal().get_modal())
 
@@ -50,7 +50,7 @@ class ViewHandler:
         # Add the message_ts to the user's order info
         TACO_ORDERS[user_id]["message_ts"] = payload["message"]["ts"]
 
-        print(f'Sending {user_id} a TacoOrder Modal...')
+        logger.debug(f'Sending {user_id} a TacoOrder Modal...')
 
         # Show the ordering dialog to the user
         open_dialog = slack_client.views_open(trigger_id=payload["trigger_id"],
