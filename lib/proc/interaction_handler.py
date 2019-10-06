@@ -1,8 +1,10 @@
+import json
 import os
 
 from slack import WebClient
 
 from lib.api.taco_tuesday_api_handler import TacoTuesdayApiHandler
+from lib.block.view_parser_error import ViewParserError
 from lib.proc.action_handler import ActionHandler
 from lib.proc.view_handler import ViewHandler
 
@@ -15,16 +17,24 @@ class InteractionHandler:
         self.api_handler = TacoTuesdayApiHandler()
 
     def _handle_action(self, action: {}):
+        print('Handling action...')
         self.action_handler.handle(action)
 
     def _handle_view(self, view: {}):
+        print('Handling view...')
         self.view_handler.handle(view)
 
     def handle_interaction(self, interaction: {}):
-        if self.action_handler.is_action_interaction(interaction):
-            self._handle_action(interaction)
-        elif self.view_handler.is_view_interaction(interaction):
-            self._handle_view(interaction)
+        print('Handling Interaction!')
+        try:
+            if self.action_handler.is_action_interaction(interaction):
+                self._handle_action(interaction)
+            elif self.view_handler.is_view_interaction(interaction):
+                self._handle_view(interaction)
+
+            return ''
+        except ViewParserError as e:
+            return e.block_error.get_block_error()
 
     def send_taco_modal(self, trigger_id: str):
         self.view_handler.send_new_taco_order_modal(trigger_id)

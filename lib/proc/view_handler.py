@@ -1,8 +1,10 @@
 from slack import WebClient
 
 from lib.api.taco_tuesday_api_handler import TacoTuesdayApiHandler
+from lib.block.view_parser_error import ViewParserError
 from lib.domain.taco import Taco
 from lib.modal.taco_order_modal import TacoOrderModal
+from lib.proc.view_parser import ViewParser
 
 
 class ViewHandler:
@@ -10,17 +12,22 @@ class ViewHandler:
 
     def __init__(self, slack_client: WebClient):
         self.slack_client = slack_client
+        self.view_parser = ViewParser()
 
     @staticmethod
     def is_view_interaction(interaction):
         if 'type' not in interaction: return False
 
-        return 'type' == 'view_submission'
+        return interaction['type'] == 'view_submission'
 
     def handle_submission(self, view_submission: {}):
-        pass
+        order = self.view_parser.parse_submission_into_individual_order(view_submission)
+        print(order.tacos)
+
+
 
     def handle(self, view: {}):
+        print(f'View type: {view["type"]}')
         if view['type'] == 'view_submission': self.handle_submission(view)
 
         #taco_order = TACO_ORDERS[user_id]
@@ -36,7 +43,7 @@ class ViewHandler:
         # Show the ordering dialog to the user
         print(self.TACOS)
         open_dialog = self.slack_client.views_open(trigger_id=trigger_id,
-                                              view=TacoOrderModal(self.TACOS).get_modal())
+                                              view=TacoOrderModal().get_modal())
 
 
 """

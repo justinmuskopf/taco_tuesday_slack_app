@@ -1,4 +1,4 @@
-from flask import Flask, request, make_response, Response
+from flask import Flask, request, make_response, Response, jsonify
 import os
 import pprint
 import json
@@ -48,9 +48,11 @@ def message_actions():
 
     PP.pprint(payload)
 
-    IH.handle_interaction(payload)
+    response = IH.handle_interaction(payload)
+    if response: response = jsonify(response)
+    print("Response: ", response)
 
-    return make_response("", 200)
+    return response
 
 
 if __name__ == "__main__":

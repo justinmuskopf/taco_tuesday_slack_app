@@ -29,5 +29,8 @@ class TacoTuesdayApiHandler:
 
         return cls.TACOS
 
+    def submit_order(self, order):
+        pass
+
     def __init__(self):
         self.get_tacos_from_api()
