@@ -1,7 +1,12 @@
 from lib.block.block_error import BlockError
 from lib.block.taco_block import TacoBlock
-from lib.proc.view_parser_error import ViewParserError
 from lib.domain.individual_order import IndividualOrder
+
+
+class ViewParserError(RuntimeError):
+    def __init__(self, cause: str, block_error: BlockError):
+        super().__init__(cause)
+        self.block_error = block_error
 
 
 class ViewParser:

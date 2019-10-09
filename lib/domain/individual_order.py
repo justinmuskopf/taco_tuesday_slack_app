@@ -1,21 +1,13 @@
-from lib.api.taco_tuesday_api_handler import TacoTuesdayApiHandler
+from loguru import logger
+from lib.domain.order import Order
 
 
-class IndividualOrder:
-    TACOS = TacoTuesdayApiHandler.get_tacos_from_api()
+class IndividualOrder(Order):
+    ID = 0
 
     def __init__(self):
-        self.price: float = 0
-        self.tacos = {}
+        super().__init__()
 
-    def add(self, taco_type: str, count: int):
-        # TODO: Throw
-        if count <= 0:
-            return
-
-        price = self.TACOS[taco_type]['price']
-        if taco_type not in self.tacos:
-            self.tacos[taco_type] = 0
-
-        self.tacos[taco_type] += count
-        self.price += count * price
+        IndividualOrder.ID += 1
+        self.internal_id = IndividualOrder.ID
+        logger.debug(f'Creating individual order, internal_id = {self.internal_id}')

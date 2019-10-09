@@ -1,16 +1,29 @@
 from decimal import Decimal, ROUND_HALF_UP
 from loguru import logger
 
+from lib.api.taco_tuesday_api_handler import TacoTuesdayApiHandler
+from lib.domain.price import Price
+
+
+class TacoError(ValueError):
+    VALID_TACOS = TacoTuesdayApiHandler.get_tacos_from_api()
+
+    def __init__(self, taco_type: str = '', count: int = 0):
+        err = 'An unknown TacoError occurred!'
+
+        if taco_type:
+            err = f'Invalid Taco Type: "{taco_type}". Valid tacos: {self.VALID_TACOS})'
+        elif count < 0:
+            err = f'Given a negative number of tacos! ({count})'
+
+        logger.error(err)
+        super().__init__(err)
+
 
 class Taco:
-    CENTS_PATTERN = Decimal('0.01')
-
     def __init__(self, taco_type: str, price: float):
         self.taco_type = self.deserialize_type(taco_type)
-        self.price = Decimal(price)
-
-    def get_price_string(self) -> str:
-        return '${}'.format(self.price.quantize(self.CENTS_PATTERN, ROUND_HALF_UP))
+        self.price = Price(price)
 
     @staticmethod
     def serialize_type(taco_type: str) -> str:
@@ -26,3 +39,6 @@ class Taco:
         logger.debug(f'Taco Type: {taco_type} --> {deserialized}')
 
         return deserialized
+
+    def __str__(self):
+        return f'{self.taco_type} ({str(self.price)})'
