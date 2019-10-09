@@ -1,6 +1,5 @@
 from lib.api.taco_tuesday_api_handler import TacoTuesdayApiHandler
 from lib.block.taco_block import TacoBlock
-from lib.domain.taco import Taco
 from lib.modal.modal import Modal
 
 

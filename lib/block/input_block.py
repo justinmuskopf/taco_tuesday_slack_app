@@ -1,5 +1,5 @@
 from lib.block.block import Block
-from lib.domain.label import Label
+from lib.text.label import Label
 
 
 class InputBlock(Block):
@@ -14,8 +14,8 @@ class InputBlock(Block):
         block['element'] = {
             'type': 'plain_text_input',
             'initial_value': self.initial_value
-
         }
+
         if self.action_id is not None:
             block['element']['action_id'] = self.action_id
 

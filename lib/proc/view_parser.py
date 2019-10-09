@@ -1,8 +1,7 @@
 from lib.block.block_error import BlockError
 from lib.block.taco_block import TacoBlock
-from lib.block.view_parser_error import ViewParserError
+from lib.proc.view_parser_error import ViewParserError
 from lib.domain.individual_order import IndividualOrder
-from lib.domain.taco import Taco
 
 
 class ViewParser:

@@ -1,5 +1,5 @@
 from lib.block.input_block import InputBlock
-from lib.domain.label import Label
+from lib.text.label import Label
 from lib.domain.taco import Taco
 
 

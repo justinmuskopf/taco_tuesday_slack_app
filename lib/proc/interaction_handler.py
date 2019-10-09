@@ -3,7 +3,7 @@ from loguru import logger
 from slack import WebClient
 
 from lib.api.taco_tuesday_api_handler import TacoTuesdayApiHandler
-from lib.block.view_parser_error import ViewParserError
+from lib.proc.view_parser_error import ViewParserError
 from lib.proc.action_handler import ActionHandler
 from lib.proc.view_handler import ViewHandler
 

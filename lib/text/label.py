@@ -1,4 +1,4 @@
-from lib.domain.text import Text
+from lib.text.text import Text
 
 
 class Label(Text):

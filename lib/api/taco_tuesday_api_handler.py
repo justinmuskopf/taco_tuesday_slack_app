@@ -1,3 +1,4 @@
+from lib.domain.employee import Employee
 from lib.domain.taco import Taco
 from loguru import logger
 import os
@@ -10,13 +11,17 @@ class TacoTuesdayApiHandler:
 
     TACOS = {}
 
+    @classmethod
+    def form_api_url(cls, extension):
+        return f'{cls.API_BASE_URL}/{extension}'
+
     # TODO: Email when can't get Tacos
     @classmethod
     def get_tacos_from_api(cls):
         if cls.TACOS:
-           return cls.TACOS
+            return cls.TACOS
 
-        r = requests.get(cls.API_BASE_URL + '/tacos')
+        r = requests.get(cls.form_api_url('/tacos'))
         assert r.content is not None
 
         # TODO: catch JSON error
@@ -30,6 +35,9 @@ class TacoTuesdayApiHandler:
         return cls.TACOS
 
     def submit_order(self, order):
+        pass
+
+    def get_employee_by_slack_id(self, slack_id: str) -> Employee:
         pass
 
     def __init__(self):

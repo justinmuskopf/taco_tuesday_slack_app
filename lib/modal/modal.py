@@ -1,5 +1,5 @@
 from lib.block.block import Block
-from lib.domain.label import Label
+from lib.text.label import Label
 
 
 class Modal:

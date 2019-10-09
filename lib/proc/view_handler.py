@@ -1,7 +1,6 @@
 from slack import WebClient
 
 from lib.api.taco_tuesday_api_handler import TacoTuesdayApiHandler
-from lib.block.view_parser_error import ViewParserError
 from lib.domain.taco import Taco
 from lib.modal.taco_order_modal import TacoOrderModal
 from lib.proc.view_parser import ViewParser
