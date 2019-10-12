@@ -1,5 +1,5 @@
-from lib.block.block_error import BlockError
-from lib.block.taco_block import TacoBlock
+from lib.slack.block.block_error import BlockError
+from lib.slack.block import TacoBlock
 from lib.domain.individual_order import IndividualOrder
 
 

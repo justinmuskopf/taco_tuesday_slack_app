@@ -1,6 +1,3 @@
-from lib.block.block import Block
-
-
 class BlockError:
     def __init__(self):
         self.errors = {}

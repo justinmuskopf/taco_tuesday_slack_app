@@ -1,5 +1,5 @@
-from lib.block.block import Block
-from lib.text.label import Label
+from lib.slack.block.block import Block
+from lib.slack.text.label import Label
 
 
 class Modal:

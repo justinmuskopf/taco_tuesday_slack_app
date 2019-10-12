@@ -1,6 +1,6 @@
 from lib.api.taco_tuesday_api_handler import TacoTuesdayApiHandler
-from lib.block.taco_block import TacoBlock
-from lib.modal.modal import Modal
+from lib.slack_impl.taco_block import TacoBlock
+from lib.slack.modal.modal import Modal
 
 
 class TacoOrderModal(Modal):

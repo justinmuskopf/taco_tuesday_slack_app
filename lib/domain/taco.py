@@ -11,6 +11,7 @@ class TacoError(ValueError):
     def __init__(self, taco_type: str = '', count: int = 0):
         err = 'An unknown TacoError occurred!'
 
+        # TODO: ¿por qué no los dos?
         if taco_type:
             err = f'Invalid Taco Type: "{taco_type}". Valid tacos: {self.VALID_TACOS})'
         elif count < 0:

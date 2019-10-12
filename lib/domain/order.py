@@ -15,8 +15,10 @@ class Order:
 
         return self.tacos[taco_type]
 
-    def add(self, taco_type: str, count: int):
+    def get_tacos(self):
+        return self.tacos
 
+    def add(self, taco_type: str, count: int):
         # TODO: Throw
         if count <= 0:
             return

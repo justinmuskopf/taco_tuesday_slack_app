@@ -1,4 +1,4 @@
-from lib.button.button import Button
+from lib.slack.button import Button
 from lib.domain.employee import Employee
 
 

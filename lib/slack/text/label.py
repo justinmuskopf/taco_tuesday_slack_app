@@ -1,4 +1,4 @@
-from lib.text.text import Text
+from lib.slack.text.text import Text
 
 
 class Label(Text):

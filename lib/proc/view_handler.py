@@ -2,7 +2,7 @@ from slack import WebClient
 from loguru import logger
 from lib.api.taco_tuesday_api_handler import TacoTuesdayApiHandler
 from lib.domain.taco import Taco
-from lib.modal.taco_order_modal import TacoOrderModal
+from lib.slack_impl.taco_order_modal import TacoOrderModal
 from lib.proc.view_parser import ViewParser
 
 

@@ -1,5 +1,5 @@
-from lib.block.input_block import InputBlock
-from lib.text.label import Label
+from lib.slack.block.input_block import InputBlock
+from lib.slack.text.label import Label
 from lib.domain.taco import Taco
 
 
