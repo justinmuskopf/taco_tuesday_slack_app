@@ -5,6 +5,7 @@ import os
 import requests
 import json
 
+
 class TacoTuesdayApiHandler:
     API_BASE_URL = os.environ['TT_BASE_API_URL']
     API_KEY = os.environ['TT_API_KEY']
@@ -38,7 +39,12 @@ class TacoTuesdayApiHandler:
         pass
 
     def get_employee_by_slack_id(self, slack_id: str) -> Employee:
-        pass
+        content = requests.get(self.form_api_url(f'/employees/{slack_id}')).content
+        assert content is not None
+
+        employee_json = json.loads(content)
+
+        return Employee(slack_id, employee_json['firstName'], employee_json['lastName'])
 
     def __init__(self):
         self.get_tacos_from_api()

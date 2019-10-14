@@ -1,7 +1,7 @@
-from lib.slack.button import EmployeeReadyButton
 from lib.domain.employee import Employee
 from lib.domain.individual_order import IndividualOrder
 from lib.slack.text.text import Text
+from lib.slack_impl.employee_ready_button import EmployeeReadyButton
 
 
 class EmployeeOrderMessage:
@@ -15,6 +15,6 @@ class EmployeeOrderMessage:
     def get_message(self) -> {}:
         return {
             'type': 'section',
-            'text': Text(self._get_order_string(), markdown_enabled=True).get_text(),
-            'accessory': EmployeeReadyButton(self.employee).get_button()
+            'text': Text.get(self._get_order_string(), markdown_enabled=True),
+            'accessory': EmployeeReadyButton.get(self.employee.slack_id)
         }

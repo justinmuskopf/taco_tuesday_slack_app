@@ -6,6 +6,10 @@ class Label(Text):
         super().__init__(text, markdown_enabled)
         self.emoji_supported = emoji_supported
 
+    @staticmethod
+    def get(text: str, markdown_enabled: bool = False, emoji_supported: bool = False):
+        return Label(text, markdown_enabled, emoji_supported).get_text()
+
     def get_label(self) -> {}:
         label = super().get_text()
         label['emoji'] = self.emoji_supported

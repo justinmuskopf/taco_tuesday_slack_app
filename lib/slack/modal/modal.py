@@ -9,12 +9,16 @@ class Modal:
         self.close_text = close_text
         self.blocks = []
 
+    @staticmethod
+    def get(title_text: str, submit_text: str = 'Submit', close_text: str = 'Cancel'):
+        return Modal(title_text, submit_text, close_text).get_modal()
+
     def get_modal(self) -> {}:
         return {
             'type': 'modal',
-            'title': Label(self.title_text).get_label(),
-            'submit': Label(self.submit_text).get_label(),
-            'close': Label(self.close_text).get_label(),
+            'title': Label.get(self.title_text),
+            'submit': Label.get(self.submit_text),
+            'close': Label.get(self.close_text),
             'blocks': self.blocks
         }
 

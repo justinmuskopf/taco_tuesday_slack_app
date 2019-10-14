@@ -1,19 +1,16 @@
 from decimal import Decimal, ROUND_HALF_UP
 from loguru import logger
 
-from lib.api.taco_tuesday_api_handler import TacoTuesdayApiHandler
 from lib.domain.price import Price
 
 
 class TacoError(ValueError):
-    VALID_TACOS = TacoTuesdayApiHandler.get_tacos_from_api()
-
     def __init__(self, taco_type: str = '', count: int = 0):
         err = 'An unknown TacoError occurred!'
 
         # TODO: ¿por qué no los dos?
         if taco_type:
-            err = f'Invalid Taco Type: "{taco_type}". Valid tacos: {self.VALID_TACOS})'
+            err = f'Invalid Taco Type: "{taco_type}".'
         elif count < 0:
             err = f'Given a negative number of tacos! ({count})'
 

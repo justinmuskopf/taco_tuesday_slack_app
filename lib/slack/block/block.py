@@ -11,12 +11,12 @@ class Block:
         Block.ID += 1
         self.id = Block.ID
 
-    def get_block(self):
+    def get_block(self) -> {}:
         block = {'type': self.block_type}
         if self.block_id is not None:
             block['block_id'] = self.block_id
 
         return block
 
-    def get_block_id(self):
+    def get_block_id(self) -> str:
         return self.block_id

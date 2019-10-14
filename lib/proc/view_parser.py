@@ -1,6 +1,10 @@
+from pprint import pformat
+
+from loguru import logger
+
 from lib.slack.block.block_error import BlockError
-from lib.slack.block import TacoBlock
 from lib.domain.individual_order import IndividualOrder
+from lib.slack_impl.taco_block import TacoBlock
 
 
 class ViewParserError(RuntimeError):
@@ -11,12 +15,20 @@ class ViewParserError(RuntimeError):
 
 class ViewParser:
     def parse_submission_into_individual_order(self, view_submission: {}) -> IndividualOrder:
+        logger.debug('Parsing submission into order...')
+        logger.debug(pformat(view_submission))
         # TODO: Throw
-        if 'view' not in view_submission: return None
-        if 'state' not in view_submission['view']: return None
-        if 'values' not in view_submission['view']['state']: return None
+        if 'view' not in view_submission:
+            logger.debug('No view in submission! Aborting order creation.')
+            return None
+        if 'state' not in view_submission['view']:
+            logger.debug('No view/state in submission! Aborting order creation.')
+            return None
+        if 'values' not in view_submission['view']['state']:
+            logger.debug('No view/state/values in submission! Aborting order creation.')
+            return None
 
-        order = IndividualOrder()
+        order = IndividualOrder(view_submission['user']['id'])
         block_ids: dict = view_submission['view']['state']['values']
 
         block_error = BlockError()

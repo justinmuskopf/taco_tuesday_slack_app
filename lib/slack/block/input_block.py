@@ -9,6 +9,10 @@ class InputBlock(Block):
         self.action_id = action_id
         self.label = label
 
+    @staticmethod
+    def get(label: Label, block_id: str = None, initial_value: str = '', action_id: str = None):
+        return InputBlock(label, block_id, initial_value, action_id).get_block()
+
     def get_block(self) -> {}:
         block = super().get_block()
         block['element'] = {

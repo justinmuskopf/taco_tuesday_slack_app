@@ -5,15 +5,11 @@ from lib.domain.taco import Taco
 
 class TacoBlock(InputBlock):
     def __init__(self, taco_type: str, taco: Taco):
-        super().__init__(label=self._create_label(taco),
+        super().__init__(label=Label.get(str(taco)),
                          initial_value='0',
                          block_id=self.generate_block_id(taco_type),
                          action_id=self.generate_action_id(taco_type))
         self.taco = taco
-
-    @staticmethod
-    def _create_label(taco: Taco) -> Label:
-        return Label('{} ({})'.format(taco.taco_type, taco.get_price_string())).get_label()
 
     @staticmethod
     def generate_block_id(taco_type: str) -> str:

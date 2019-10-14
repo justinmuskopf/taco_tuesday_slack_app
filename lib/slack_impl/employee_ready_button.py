@@ -1,16 +1,19 @@
-from lib.slack.button import Button
-from lib.domain.employee import Employee
+from lib.slack.button.button import Button, ButtonStyle
 
 
 class EmployeeReadyButton(Button):
-    def __init__(self, employee: Employee):
-        super().__init__(text='Ready', style=Button.PRIMARY)
-        self.employee = employee
-        self.action_id = self._get_action_id(self.employee)
+    def __init__(self, slack_id: str):
+        super().__init__(text='Ready', style=ButtonStyle.PRIMARY)
+        self.slack_id = slack_id
+        self.action_id = self._get_action_id(slack_id)
 
     @staticmethod
-    def _get_action_id(employee: Employee) -> str:
-        return f'{employee.slack_id}_ReadyButton_actionId'
+    def get(slack_id: str) -> {}:
+        return EmployeeReadyButton(slack_id).get_button()
+
+    @staticmethod
+    def _get_action_id(slack_id: str) -> str:
+        return f'{slack_id}_ReadyButton_actionId'
 
     def get_button(self) -> {}:
         button = super().get_button()

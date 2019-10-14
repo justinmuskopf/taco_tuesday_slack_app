@@ -2,6 +2,7 @@ from slack import WebClient
 from loguru import logger
 from lib.api.taco_tuesday_api_handler import TacoTuesdayApiHandler
 from lib.domain.taco import Taco
+from lib.slack_impl.running_order_message import RunningOrderMessage
 from lib.slack_impl.taco_order_modal import TacoOrderModal
 from lib.proc.view_parser import ViewParser
 
@@ -21,7 +22,9 @@ class ViewHandler:
 
     def handle_submission(self, view_submission: {}):
         order = self.view_parser.parse_submission_into_individual_order(view_submission)
-        logger.debug(order.tacos)
+        logger.debug(f'Received individual order: {order}')
+
+        return RunningOrderMessage()
 
     def handle(self, view: {}):
         logger.debug(f'View type: {view["type"]}')

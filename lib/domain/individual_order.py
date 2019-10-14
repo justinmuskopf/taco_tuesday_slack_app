@@ -1,17 +1,18 @@
 from loguru import logger
 
-from lib.domain.employee import Employee
 from lib.domain.order import Order
+from lib.domain.taco import Taco
 
 
 class IndividualOrder(Order):
     ID = 0
 
-    def __init__(self, employee: Employee):
+    def __init__(self, slack_id: str):
         super().__init__()
 
         IndividualOrder.ID += 1
         self.internal_id = IndividualOrder.ID
         logger.debug(f'Creating individual order, internal_id = {self.internal_id}')
 
-        self.employee = employee
+        self.slack_id = slack_id
+

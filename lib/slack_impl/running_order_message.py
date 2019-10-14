@@ -1,50 +1,43 @@
 from lib.domain.employee import Employee
+from lib.domain.full_order import FullOrder
 from lib.domain.individual_order import IndividualOrder
-from lib.domain.order import Order
+from lib.slack.block.divider import Divider
 from lib.slack.message.employee_order_message import EmployeeOrderMessage
+from lib.slack.text.text import Text
 
 
 class RunningOrderMessage:
-    def __init__(self):
-        self.individual_orders: {IndividualOrder} = {}
-        self.individual_messages: {EmployeeOrderMessage} = {}
-        self.order: Order = Order()
+    def __init__(self, order: FullOrder = None):
+        self.order: FullOrder = FullOrder() if order is None else order
+        self.individual_messages: {str, EmployeeOrderMessage} = {}
+
+    @staticmethod
+    def get():
+        return RunningOrderMessage().get_message()
 
     def add_order(self, order: IndividualOrder, employee: Employee):
         slack_id = employee.slack_id
-        self.individual_orders[slack_id] = order
-        self.individual_messages[slack_id] = EmployeeOrderMessage(slack_id, order)
+        if self.order.has_employee_order(slack_id):
+            self.order.update_order(order)
+        else:
+            self.order.add_order(order)
 
-    # TODO: I hate this entire method
-    def get_running_order(self):
-        running_order = {}
-        price = 0
-        for order in self.individual_orders:
-            price += order.price
-
-            for taco_type in order.tacos:
-                if taco_type not in running_order:
-                    running_order[taco_type] = self.individual_orders[taco_type]
-                else:
-                    running_order[taco_type] += self.individual_orders[taco_type]
-
-        return running_order
+        self.individual_messages[slack_id] = EmployeeOrderMessage(employee, order)
 
     def get_running_order_section(self):
-        running_order = self.get_running_order()
+        return {
+            'type': 'section',
+            'text': Text.get(str(self.order), markdown_enabled=True)
+        }
 
-
-    # TODO: Only need to update the changed ones?
     def get_message(self):
-        individual_messages = []
-        for slack_id in self.individual_orders:
-            individual_messages.append(self.individual_orders[slack_id].get_message())
+        # TODO: Only need to update the changed ones?
+        running_order = self.get_running_order_section()
 
-        running_order = self.get_running_order()
-
-        blocks = individual_messages.copy()
-        blocks.append()
+        blocks = [self.individual_messages[m] for m in self.individual_messages]
+        blocks.append(Divider().get())
+        blocks.append(running_order)
 
         return {
-            'blocks': individual_messages.append(running_order)
+            'blocks': blocks
         }
