@@ -1,7 +1,6 @@
 from loguru import logger
 
 from lib.domain.order import Order
-from lib.domain.taco import Taco
 
 
 class IndividualOrder(Order):
@@ -15,4 +14,3 @@ class IndividualOrder(Order):
         logger.debug(f'Creating individual order, internal_id = {self.internal_id}')
 
         self.slack_id = slack_id
-

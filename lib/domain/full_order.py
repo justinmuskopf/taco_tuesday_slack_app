@@ -13,7 +13,7 @@ class FullOrder(Order):
         return slack_id in self.individual_orders
 
     def add_order(self, order: IndividualOrder):
-        self.individual_orders[order.slack_id()] = order
+        self.individual_orders[order.slack_id] = order
 
     def remove_order(self, order: IndividualOrder):
         tacos = order.tacos
@@ -24,7 +24,7 @@ class FullOrder(Order):
         return tacos
 
     def update_order(self, order):
-        if order.slack_id() in self.individual_orders:
+        if order.slack_id in self.individual_orders:
             self.remove_order(order)
 
         self.add_order(order)

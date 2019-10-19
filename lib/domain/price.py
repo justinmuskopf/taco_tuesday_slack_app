@@ -3,6 +3,7 @@ class InvalidPriceError(ValueError):
     def __init__(self, message):
         super().__init__(message)
 
+
 class Price:
     def __init__(self, price: float = 0):
         self.price = price
