@@ -1,8 +1,12 @@
+from loguru import logger
+
 from lib.domain.full_order import FullOrder
 from lib.domain.individual_order import IndividualOrder
 from lib.slack.block.divider import Divider
 from lib.slack.message.employee_order_message import EmployeeOrderMessage
+from lib.slack.text.label import Label
 from lib.slack.text.text import Text
+from lib.slack_impl.order_ready_button import OrderReadyButton
 
 
 class RunningOrderMessage:
@@ -23,20 +27,29 @@ class RunningOrderMessage:
 
         self.individual_messages[order.slack_id] = EmployeeOrderMessage(order)
 
+    def _get_header_section(self):
+        return {
+            'type': 'section',
+            'text': Text.get('*Begin Order*', markdown_enabled=True)
+        }
+
     def _get_running_order_section(self):
         return {
             'type': 'section',
             'text': Text.get(f'*Total*\n{self.order}', markdown_enabled=True),
-            #'accessory': EmployeeReadyButton.get(self.employee.slack_id)
+            'accessory': OrderReadyButton.get()
         }
 
     def get_message(self):
         # TODO: Only need to update the changed ones?
         running_order = self._get_running_order_section()
 
-        blocks = [self.individual_messages[m].get_message() for m in self.individual_messages]
+        blocks = [self._get_header_section(), Divider().get()]
+        blocks += [self.individual_messages[m].get_message() for m in self.individual_messages]
         blocks.append(Divider().get())
         blocks.append(running_order)
+
+        logger.debug(blocks)
 
         return {
             'blocks': blocks

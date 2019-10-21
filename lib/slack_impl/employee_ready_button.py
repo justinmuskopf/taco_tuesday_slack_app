@@ -1,39 +1,20 @@
-from lib.slack.button.button import Button, ButtonStyle
+from lib.slack_impl.ready_button import ReadyButton
 
 
-class EmployeeReadyButton(Button):
+class EmployeeReadyButton(ReadyButton):
     ReadyEmployees = {}
 
-    def __init__(self, slack_id: str, ready=False):
-        super().__init__(text='Not Ready' if not ready else 'Ready', style=ButtonStyle.DANGER if not ready else ButtonStyle.PRIMARY)
+    def __init__(self, slack_id: str, ready: bool = False):
+        super().__init__(ready_text='Ready', not_ready_text='Not Ready', prefix=slack_id, ready=ready)
         self.slack_id = slack_id
-        self.action_id = self._get_action_id(slack_id)
 
-        EmployeeReadyButton.ReadyEmployees[slack_id] = ready
+        EmployeeReadyButton.ReadyEmployees[slack_id] = self.ready
 
     @classmethod
     def get(cls, slack_id: str) -> {}:
-        if slack_id not in cls.ReadyEmployees:
-            cls.ReadyEmployees[slack_id] = False
+        if slack_id not in cls.ReadyEmployees: cls.ReadyEmployees[slack_id] = False
 
         return EmployeeReadyButton(slack_id, cls.ReadyEmployees[slack_id]).get_button()
-
-    @staticmethod
-    def _get_action_id(slack_id: str) -> str:
-        return f'{slack_id}_ReadyButton_actionId'
-
-    @staticmethod
-    def get_slack_id_from_action_id(action_id: str) -> str:
-        return action_id.split('_')[0]
-
-    @staticmethod
-    def is_ready_button_action(action_id: str) -> bool:
-        return '_ReadyButton_actionId' in action_id
-
-    @staticmethod
-    def ready_button_belongs_to_slack_id(action_id: str, slack_id: str):
-        button_slack_id = action_id.split('_')[0]
-        return button_slack_id == slack_id
 
     @classmethod
     def set_ready(cls, slack_id: str, ready: bool):
@@ -46,15 +27,16 @@ class EmployeeReadyButton(Button):
         else:
             cls.ReadyEmployees[slack_id] = not cls.ReadyEmployees[slack_id]
 
+    @staticmethod
+    def get_slack_id_from_action_id(action_id: str):
+        return action_id.split('_')[0]
+
+    @classmethod
+    def ready_button_belongs_to_slack_id(cls, action_id: str, slack_id: str):
+        button_slack_id = cls.get_slack_id_from_action_id(action_id)
+        return button_slack_id == slack_id
+
     def get_button(self) -> {}:
-        if self.ReadyEmployees[self.slack_id]:
-            self.style = ButtonStyle.PRIMARY
-            self.text = 'Ready'
-        else:
-            self.style = ButtonStyle.DANGER
-            self.text = 'Not Ready'
+        self.ready = EmployeeReadyButton.ReadyEmployees[self.slack_id]
 
-        button = super().get_button()
-        button['action_id'] = self.action_id
-
-        return button
+        return super().get_button()
