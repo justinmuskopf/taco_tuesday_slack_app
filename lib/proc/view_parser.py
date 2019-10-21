@@ -15,9 +15,9 @@ class ViewParserError(RuntimeError):
 
 
 class ViewParser:
-    def parse_submission_into_individual_order(self, view_submission: {}) -> IndividualOrder:
+    @staticmethod
+    def parse_submission_into_individual_order(view_submission: {}) -> IndividualOrder:
         logger.debug('Parsing submission into order...')
-        #logger.debug(pformat(view_submission))
 
         # TODO: Throw
         if 'view' not in view_submission:

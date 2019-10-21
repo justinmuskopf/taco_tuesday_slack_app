@@ -2,6 +2,7 @@ from loguru import logger
 
 from lib.domain.employee import Employee
 from lib.domain.order import Order
+from lib.slack_impl.employee_ready_button import EmployeeReadyButton
 
 
 class IndividualOrder(Order):
@@ -16,3 +17,5 @@ class IndividualOrder(Order):
 
         self.employee = employee
         self.slack_id = employee.slack_id
+
+        EmployeeReadyButton.set_ready(self.slack_id, False)

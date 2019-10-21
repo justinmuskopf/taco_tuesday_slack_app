@@ -1,5 +1,3 @@
-from lib.domain.employee import Employee
-from lib.proc.handler.employee import EmployeeHandler
 from lib.domain.full_order import FullOrder
 from lib.domain.individual_order import IndividualOrder
 from lib.slack.block.divider import Divider
@@ -15,10 +13,9 @@ class RunningOrderMessage:
 
     def ingest_full_order(self, full_order: FullOrder):
         for order in full_order.get_orders():
-            employee = EmployeeHandler.get_employee(order.slack_id)
-            self.add_order(order, employee)
+            self.add_order(order)
 
-    def add_order(self, order: IndividualOrder, employee: Employee):
+    def add_order(self, order: IndividualOrder):
         if self.order.has_employee_order(order.slack_id):
             self.order.update_order(order)
         else:
@@ -29,7 +26,8 @@ class RunningOrderMessage:
     def _get_running_order_section(self):
         return {
             'type': 'section',
-            'text': Text.get(str(self.order), markdown_enabled=True)
+            'text': Text.get(f'*Total*\n{self.order}', markdown_enabled=True),
+            'accessory': EmployeeReadyButton.get(self.employee.slack_id)
         }
 
     def get_message(self):

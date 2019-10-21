@@ -39,7 +39,6 @@ class EmployeeName:
 
     def __str__(self):
         name_string = f'{self.first_name} {self.last_name}'
-        if self.nick_name: name_string += f' ({self.nick_name})'
 
         return name_string
 

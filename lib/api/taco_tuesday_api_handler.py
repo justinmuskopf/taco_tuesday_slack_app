@@ -68,9 +68,8 @@ class TacoTuesdayApiHandler:
         tacos = cls.do_api_interaction(cls.GET, '/tacos').json()
 
         # TODO: catch JSON error
-        logger.debug("Taco(s) received from API: ", tacos)
         for taco in tacos:
-            logger.debug(f'Loading taco: {taco}')
+            logger.info(f'Loading taco: {taco}')
             taco_type = taco['type']
             cls.TACOS[taco_type] = Taco(taco_type=taco_type, price=taco['price'])
 
@@ -103,7 +102,7 @@ class TacoTuesdayApiHandler:
         except KeyError:
             raise NoSuchEmployeeError(slack_id)
         except AssertionError:
-            raise TacoTuesdayApiError(f'An employee with a different Slack ID was returned (wanted: {slack_id}, returned: {employee_json["slackId"]})!')
+            raise TacoTuesdayApiError(f'An employee with a different Slack ID was returned (wanted: {slack_id}, returned: {employee_dict["slackId"]})!')
 
 
     @classmethod

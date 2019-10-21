@@ -12,8 +12,10 @@ class EmployeeOrderMessage:
         self.order = order
 
     def _get_order_string(self) -> str:
-        logger.debug("Getting Employee Order string!")
-        return f'*{self.employee.name}*\n{str(self.order)}'
+        name = self.employee.name
+        name_string = f'{name.nick_name}' if name.nick_name else str(name)
+
+        return f'*{name_string}*\n{str(self.order)}'
 
     def get_message(self) -> {}:
         return {
