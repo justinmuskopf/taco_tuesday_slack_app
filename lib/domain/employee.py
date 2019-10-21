@@ -1,14 +1,16 @@
-from lib.domain.domain_error import DomainError
-from lib.domain.individual_order import IndividualOrder
+from loguru import logger
 
+from lib.domain.domain_error import DomainError
 
 class EmployeeError(DomainError):
     def __init__(self, message):
-        super().__init__(message)
+        super().__init__(Employee, message)
+
 
 class EmployeeNoSlackIdError(EmployeeError):
     def __init__(self):
         super().__init__('Employees must have a slack ID!')
+
 
 class EmployeeNameError(EmployeeError):
     def __init__(self, first_name='', last_name=''):
@@ -35,27 +37,67 @@ class EmployeeName:
         if nick_name:
             self.nick_name = nick_name
 
+    def __str__(self):
+        name_string = f'{self.first_name} {self.last_name}'
+        if self.nick_name: name_string += f' ({self.nick_name})'
+
+        return name_string
+
+    def get_dict(self):
+        d = {
+            'firstName': self.first_name,
+            'lastName': self.last_name,
+        }
+
+        if self.nick_name:
+            d['nickName'] = self.nick_name
+
+        return d
+
 
 class Employee:
-    def __init__(self, slack_id: str, first_name: str, last_name: str, nick_name=''):
+    def __init__(self, slack_id: str, first_name: str, last_name: str, nick_name: str = ''):
         if not self.is_valid_slack_id(slack_id):
             raise EmployeeNoSlackIdError()
 
+        logger.debug(f'Creating Employee: {first_name} {last_name} (Nickname: {nick_name}), Slack ID #{slack_id}')
+
         self.slack_id = slack_id
         self.name = EmployeeName(first_name=first_name, last_name=last_name, nick_name=nick_name)
-        self.orders: [IndividualOrder] = []
+
+    def __str__(self):
+        return f'Id #{self.slack_id}: {self.name}'
 
     @staticmethod
     def is_valid_slack_id(slack_id: str) -> bool:
-        if type(slack_id) is not str: return False
         if slack_id is None: return False
+        if type(slack_id) is not str: return False
         if slack_id is '': return False
 
         return True
 
-    def add_order(self, order: IndividualOrder):
-        order.employee = self
-        self.orders.append(order)
+    def get_dict(self):
+        d = self.name.get_dict()
+        d['slackId'] = self.slack_id
+
+        return d
+
+    @staticmethod
+    def from_dict(user_info):
+        try:
+            user_profile = user_info['user']['profile']
+
+            split_real_name = user_profile['real_name'].split(' ')
+            if len(split_real_name) < 2:
+                raise EmployeeNameError()
+
+            slack_id = user_info['user']['id']
+            first_name, last_name = split_real_name[0], ' '.join(split_real_name[1:])
+            nick_name = user_profile['display_name']
+
+            return Employee(slack_id=slack_id, first_name=first_name, last_name=last_name, nick_name=nick_name)
+        except KeyError or AttributeError:
+            raise EmployeeError(f'Provided malformed dict: {user_info}!')
 
     def get_employee(self):
         employee = {

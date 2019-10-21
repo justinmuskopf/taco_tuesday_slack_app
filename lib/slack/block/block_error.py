@@ -8,7 +8,7 @@ class BlockError:
         return BlockError().get_block_error()
 
     def add_error(self, block_id: str, error: str):
-        if self.errors[block_id] is None:
+        if block_id not in self.errors:
             self.error_count += 1
         self.errors[block_id] = error
         

@@ -1,7 +1,9 @@
+from lib.domain.domain_error import DomainError
 
-class InvalidPriceError(ValueError):
+
+class InvalidPriceError(DomainError):
     def __init__(self, message):
-        super().__init__(message)
+        super().__init__(Price, message)
 
 
 class Price:
@@ -11,7 +13,7 @@ class Price:
     def add(self, price: float):
         self.price += price
 
-    def get(self):
+    def get(self) -> float:
         return self.price
 
     def __mul__(self, other):
@@ -42,5 +44,16 @@ class Price:
 
         return self
 
+    def __sub__(self, other):
+        t = type(other)
+        if t is Price:
+            self.price -= other.price
+        elif t is int or t is float:
+            self.price -= other
+        else:
+            raise InvalidPriceError(f'Cannot add type {t} to Price!')
+
+        return self
+
     def __str__(self):
-        return format(self.price, '.2f')
+        return f'${format(self.price, ".2f")}'

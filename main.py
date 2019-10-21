@@ -5,8 +5,7 @@ import json
 from loguru import logger
 
 from lib.api.taco_tuesday_api_handler import TacoTuesdayApiHandler
-from lib.domain.order import Order
-from lib.proc.interaction_handler import InteractionHandler
+from lib.proc.handler.interaction import InteractionHandler
 
 API_HANDLER = TacoTuesdayApiHandler()
 SLACK_BOT_TOKEN = os.environ["SLACK_BOT_TOKEN"]
@@ -39,22 +38,16 @@ def order_slash_command():
 
 @app.route("/slack/interact", methods=["POST"])
 def message_actions():
-    logger.debug('At endpoint!')
-
     # Parse the request payload
     payload = json.loads(request.form["payload"])
 
-    logger.debug(pformat(f'Payload: \n{payload}'))
+    #logger.debug(pformat(f'Payload: \n{payload}'))
 
     response = IH.handle_interaction(payload)
     if response: response = jsonify(response)
-    logger.debug("Response: ", response)
 
     return response
 
 
 if __name__ == "__main__":
-    taco_prices = TacoTuesdayApiHandler.get_tacos_from_api()
-
-    Order.set_taco_prices(taco_prices)
     app.run(host='0.0.0.0')
