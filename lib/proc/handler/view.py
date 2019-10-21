@@ -21,7 +21,6 @@ class ViewHandler:
         return interaction['type'] == 'view_submission'
 
     def handle_submission(self, view_submission: {}):
-        logger.debug(self.slack_client.users_info(user=view_submission['user']['id']))
         order = self.view_parser.parse_submission_into_individual_order(view_submission)
         logger.debug(f'Received individual order: (SLACK_ID: {order.slack_id}): {order}')
 
