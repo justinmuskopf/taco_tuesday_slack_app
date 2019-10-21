@@ -27,7 +27,7 @@ class RunningOrderMessage:
         return {
             'type': 'section',
             'text': Text.get(f'*Total*\n{self.order}', markdown_enabled=True),
-            'accessory': EmployeeReadyButton.get(self.employee.slack_id)
+            #'accessory': EmployeeReadyButton.get(self.employee.slack_id)
         }
 
     def get_message(self):

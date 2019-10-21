@@ -30,6 +30,11 @@ class EmployeeReadyButton(Button):
     def is_ready_button_action(action_id: str) -> bool:
         return '_ReadyButton_actionId' in action_id
 
+    @staticmethod
+    def ready_button_belongs_to_slack_id(action_id: str, slack_id: str):
+        button_slack_id = action_id.split('_')[0]
+        return button_slack_id == slack_id
+
     @classmethod
     def set_ready(cls, slack_id: str, ready: bool):
         cls.ReadyEmployees[slack_id] = ready
