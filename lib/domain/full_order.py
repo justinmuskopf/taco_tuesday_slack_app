@@ -2,7 +2,6 @@ import copy
 
 from lib.domain.individual_order import IndividualOrder
 from lib.domain.order import Order
-from lib.domain.taco import Taco
 
 
 class FullOrder(Order):
@@ -38,3 +37,9 @@ class FullOrder(Order):
 
     def get_orders(self) -> [IndividualOrder]:
         return copy.deepcopy(self.individual_orders).values()
+
+    def get_dict(self):
+        d = super().get_dict()
+        d['individualOrders'] = [o.get_dict() for o in self.individual_orders.values()]
+
+        return d

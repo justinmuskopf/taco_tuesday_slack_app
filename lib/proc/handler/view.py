@@ -3,16 +3,20 @@ from loguru import logger
 from lib.api.taco_tuesday_api_handler import TacoTuesdayApiHandler
 from lib.domain.taco import Taco
 from lib.proc.handler.running_order import RunningOrderHandler
+from lib.slack.modal.modal import Modal
+from lib.slack_impl.order_submit_modal import OrderSubmitModal
 from lib.slack_impl.taco_order_modal import TacoOrderModal
 from lib.proc.view_parser import ViewParser
 
 
 class ViewHandler:
     TACOS: [Taco] = TacoTuesdayApiHandler.get_tacos_from_api()
+    SlackClient: WebClient = None
+    ViewParser: ViewParser = ViewParser()
 
     def __init__(self, slack_client: WebClient):
-        self.slack_client = slack_client
-        self.view_parser = ViewParser()
+        if ViewHandler.SlackClient is None:
+            ViewHandler.SlackClient = slack_client
 
     @staticmethod
     def is_view_interaction(interaction):
@@ -20,16 +24,33 @@ class ViewHandler:
 
         return interaction['type'] == 'view_submission'
 
-    def handle_submission(self, view_submission: {}):
-        order = self.view_parser.parse_submission_into_individual_order(view_submission)
-        logger.debug(f'Received individual order: (SLACK_ID: {order.slack_id}): {order}')
+    @classmethod
+    def handle_submission(cls, view_submission: {}):
+        logger.debug(f'Given view: {view_submission}')
+        callback_id = view_submission['view']['callback_id']
 
-        RunningOrderHandler.add_order(order)
+        if TacoOrderModal.is_taco_order_submission(callback_id):
+            order = cls.ViewParser.parse_submission_into_individual_order(view_submission)
+            RunningOrderHandler.add_order(order)
+        elif OrderSubmitModal.is_order_submit_submission(callback_id):
+            logger.warning('Handling forced Order submission!')
+            pass
 
-    def handle(self, view: {}):
+    @classmethod
+    def handle(cls, view: {}):
         logger.debug(f'View type: {view["type"]}')
-        if view['type'] == 'view_submission': self.handle_submission(view)
+        if view['type'] == 'view_submission': cls.handle_submission(view)
 
-    def send_new_taco_order_modal(self, trigger_id: str):
+    @classmethod
+    def send_modal(cls, trigger_id: str, modal: Modal):
+        response = cls.SlackClient.views_open(trigger_id=trigger_id, view=modal.get_modal())
+        assert response['ok']
+
+    @classmethod
+    def send_new_taco_order_modal(cls, trigger_id: str):
         # Show the ordering dialog to the user
-        open_dialog = self.slack_client.views_open(trigger_id=trigger_id, view=TacoOrderModal().get_modal())
+        cls.send_modal(trigger_id, TacoOrderModal())
+
+    @classmethod
+    def send_order_submit_modal(cls, trigger_id: str):
+        cls.send_modal(trigger_id, OrderSubmitModal())

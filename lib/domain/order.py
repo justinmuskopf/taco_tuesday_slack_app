@@ -31,10 +31,6 @@ class Order:
     def __iter__(self):
         for taco_type in self.tacos: yield taco_type
 
-    def _get_tacos(self, taco_type: str) -> int:
-        InvalidTacoTypeError.assert_type_valid(taco_type)
-        return self.tacos[taco_type]
-
     @staticmethod
     def _get_price_for_tacos(taco_type: str, count: int):
         return ValidTacos.get_taco_price(taco_type).price * count
@@ -43,6 +39,14 @@ class Order:
     def _is_valid_count(count):
         NegativeTacoError.assert_non_negative(count)
         return count > 0
+
+    @staticmethod
+    def get_taco_name(taco_type: str):
+        return ValidTacos.get_taco(taco_type).name
+
+    def _get_tacos(self, taco_type: str) -> int:
+        InvalidTacoTypeError.assert_type_valid(taco_type)
+        return self.tacos[taco_type]
 
     def _is_valid_taco_change(self, taco_type: str, count: int, adding: bool):
         InvalidTacoTypeError.assert_type_valid(taco_type)
@@ -73,9 +77,11 @@ class Order:
     def remove_taco_type(self, taco_type: str):
         self.remove(taco_type, self.tacos[taco_type])
 
-    @staticmethod
-    def get_taco_name(taco_type: str):
-        return ValidTacos.get_taco(taco_type).name
+    def get_dict(self) -> {}:
+        d = {Taco.serialize_type_into_api_key(t): self.tacos[t] for t in self.tacos}
+        d['total'] = round(self.price.get(), 2)
+
+        return d
 
     def __str__(self):
         # ['4 Barbacoa', '3 Tripa', '4 Lengua', '2 Chicken Fajita']

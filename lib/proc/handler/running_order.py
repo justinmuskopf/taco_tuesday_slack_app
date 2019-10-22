@@ -3,6 +3,7 @@ from loguru import logger
 from slack import WebClient
 from slack.errors import SlackApiError
 
+from lib.api.taco_tuesday_api_handler import TacoTuesdayApiHandler
 from lib.domain.domain_error import DomainError
 from lib.domain.full_order import FullOrder
 from lib.domain.individual_order import IndividualOrder
@@ -85,7 +86,6 @@ class RunningOrderHandler:
             return logger.error(f'ERROR: Invalid response received: {ke}')
 
         logger.info("Created new RunningOrderMessage!")
-        #logger.debug(f'New running order response: {pformat(str(response))}')
 
         cls.FirstMessageSent = True
 
@@ -101,4 +101,14 @@ class RunningOrderHandler:
                                                blocks=message.get_blocks())
 
         logger.info("Updated existing RunningOrderMessage!")
-        #logger.debug(f'Updated running order response: {pformat(str(response))}')
+
+    @classmethod
+    def submit_order(cls):
+        RunningOrderError.assert_order_is_running(True)
+        logger.info('Submitting Running Order!')
+
+        TacoTuesdayApiHandler.submit_order(cls.RunningOrder)
+
+        logger.debug(f'Submitted Order: {pformat(cls.RunningOrder.get_dict())}')
+
+        cls.end_order()

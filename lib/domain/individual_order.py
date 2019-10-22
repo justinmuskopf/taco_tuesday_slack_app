@@ -19,3 +19,9 @@ class IndividualOrder(Order):
         self.slack_id = employee.slack_id
 
         EmployeeReadyButton.set_ready(self.slack_id, False)
+
+    def get_dict(self):
+        d = super().get_dict()
+        d['employee'] = self.employee.get_dict()
+
+        return d

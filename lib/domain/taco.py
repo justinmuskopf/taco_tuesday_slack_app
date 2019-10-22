@@ -58,6 +58,15 @@ class Taco:
 
         return deserialized
 
+    @staticmethod
+    def serialize_type_into_api_key(taco_type: str):
+        InvalidTacoTypeError.assert_type_valid(taco_type)
+        lowered_split = taco_type.lower().split('_')
+
+        camel_case = lowered_split[0] + ''.join([s[0].upper() + s[1:] for s in lowered_split[1:]])
+
+        return camel_case
+
     def __str__(self):
         return f'{self.name} ({str(self.price)})'
 

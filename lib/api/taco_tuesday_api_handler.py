@@ -3,6 +3,7 @@ from json import JSONDecodeError
 
 from lib.domain.domain_error import DomainError
 from lib.domain.employee import Employee
+from lib.domain.full_order import FullOrder
 from lib.domain.taco import Taco, ValidTacos
 from loguru import logger
 import copy
@@ -49,11 +50,14 @@ class TacoTuesdayApiHandler:
 
     @classmethod
     def do_api_interaction(cls, request_method, uri: str, headers={}, params={}, body_object={}):
+        logger.debug(f'Performing HTTP Method {request_method} --> {uri} (params = {params}) (body = {body_object})')
         api_url = cls.form_api_url(uri)
 
         try:
             response = request_method(api_url, headers=headers, params=params, json=body_object)
             assert response.content is not None
+
+            logger.debug(f'Returned from API: {response.content}')
 
             return response
         except Exception as e:
@@ -83,8 +87,18 @@ class TacoTuesdayApiHandler:
         cls.get_tacos_from_api()
 
     @classmethod
-    def submit_order(self, order):
-        pass
+    def submit_order(cls, order: FullOrder):
+        response = cls.do_api_interaction(cls.POST,
+                                          '/orders/full',
+                                          params={'apiKey': cls.API_KEY},
+                                          body_object=order.get_dict())
+
+        try:
+            order_dict = response.json()
+            if order is None: raise TacoTuesdayApiError(f'Could not create order {order.get_dict()}!')
+
+        except Exception as e:
+            raise TacoTuesdayApiError(f'An unknown error occurred when creating a full order: {e}!')
 
     @classmethod
     def get_employee_by_slack_id(cls, slack_id: str) -> Employee:
@@ -98,12 +112,12 @@ class TacoTuesdayApiHandler:
 
             nick_name = None if 'nickName' not in employee_dict else employee_dict['nickName']
 
-            return Employee(slack_id, employee_dict['firstName'], employee_dict['lastName'], nick_name)
-        except KeyError:
+            return Employee(slack_id, employee_dict['firstName'], employee_dict['lastName'], nick_name, api_id=employee_dict['id'])
+        except KeyError as e:
+            logger.debug(f'KeyError: {e}')
             raise NoSuchEmployeeError(slack_id)
         except AssertionError:
             raise TacoTuesdayApiError(f'An employee with a different Slack ID was returned (wanted: {slack_id}, returned: {employee_dict["slackId"]})!')
-
 
     @classmethod
     def create_employee(cls, employee: Employee) -> Employee:
@@ -122,6 +136,8 @@ class TacoTuesdayApiHandler:
 
             logger.info(f'Created Employee: {employee}!')
 
+            employee.api_id = employee_dict['id']
+
             return employee
         except AssertionError:
-            raise TacoTuesdayApiError(f'Failed to create Employee. API Response: {response}')
+            raise TacoTuesdayApiError(f'Failed to create Employee. API Response: {response}, {response.content}')

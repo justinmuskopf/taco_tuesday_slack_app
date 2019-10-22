@@ -1,7 +1,9 @@
 from loguru import logger
 from slack import WebClient
 
+from lib.proc.handler.employee import EmployeeHandler
 from lib.proc.handler.running_order import RunningOrderHandler
+from lib.proc.handler.view import ViewHandler
 from lib.slack.text.text import Text
 from lib.slack_impl.employee_ready_button import EmployeeReadyButton
 from lib.slack_impl.order_ready_button import OrderReadyButton
@@ -22,19 +24,22 @@ class ActionHandler:
     def _is_button_action(action):
         return action['value'] == 'BUTTON'
 
-    def _handle_button_action(self, slack_id, channel_id, action):
+    @staticmethod
+    def _handle_button_action(slack_id, channel_id, trigger_id, action):
+        logger.debug(f'Handling button action: {action}')
         action_id = action['action_id']
         if not ReadyButton.is_ready_button_action(action_id): return
+
         if OrderReadyButton.is_order_button_action_id(action_id):
             if not OrderReadyButton.get_ready():
-                return #self.slack_client.views_open()
+                return ViewHandler.send_order_submit_modal(trigger_id)
             else:
-                return
+                return RunningOrderHandler.submit_order()
 
         if not EmployeeReadyButton.ready_button_belongs_to_slack_id(action_id, slack_id):
-            self.slack_client.chat_postEphemeral(user=slack_id,
-                                                 channel=channel_id,
-                                                 text="Didn't your mother ever tell you not to press someone else's buttons?")
+            EmployeeHandler.discipline_employee(slack_id,
+                                                channel_id,
+                                                "Didn't your mother ever tell you not to press someone else's buttons?")
             return
 
         logger.info(f'New Ready Button action for Slack ID #{slack_id}')
@@ -45,8 +50,9 @@ class ActionHandler:
         actions = action['actions']
         slack_id = action['user']['id']
         channel_id = action['channel']['id']
+        trigger_id = action['trigger_id']
         for action in actions:
             logger.debug(f'Given Action: {action}')
             if self._is_button_action(action):
-                self._handle_button_action(slack_id, channel_id, action)
+                self._handle_button_action(slack_id, channel_id, trigger_id, action)
 

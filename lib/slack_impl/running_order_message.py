@@ -30,7 +30,7 @@ class RunningOrderMessage:
     def _get_header_section(self):
         return {
             'type': 'section',
-            'text': Text.get('*Begin Order*', markdown_enabled=True)
+            'text': Text.get(':taco: *Begin Order* :taco:', markdown_enabled=True)
         }
 
     def _get_running_order_section(self):
@@ -44,7 +44,7 @@ class RunningOrderMessage:
         # TODO: Only need to update the changed ones?
         running_order = self._get_running_order_section()
 
-        blocks = [self._get_header_section(), Divider().get()]
+        blocks = [Divider().get(), self._get_header_section(), Divider().get()]
         blocks += [self.individual_messages[m].get_message() for m in self.individual_messages]
         blocks.append(Divider().get())
         blocks.append(running_order)
