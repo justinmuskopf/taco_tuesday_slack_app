@@ -4,7 +4,7 @@ The What
 This is the front end of the [Taco Tuesday Application](github.com/justinmuskopf/taco_tuesday).
 As it currently stands, this is a [Slack](slack.com) app that facilitates the taking of Taco orders for an office.
 
-Stack
+### Stack
 The Taco Tuesday Slack App utilizes the following technologies:
 - [Python 3.6](https://www.python.org/downloads/release/python-360)
   - [requests](https://pypi.org/project/requests/2.7.0/)
