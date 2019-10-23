@@ -1,9 +1,6 @@
-from loguru import logger
-
-from lib.domain.employee import Employee
 from lib.domain.individual_order import IndividualOrder
 from lib.slack.text.text import Text
-from lib.slack_impl.employee_ready_button import EmployeeReadyButton
+from lib.slack_impl.accessory.employee_ready import EmployeeReadyButton
 
 
 class EmployeeOrderMessage:

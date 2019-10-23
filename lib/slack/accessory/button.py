@@ -1,3 +1,4 @@
+from lib.slack.accessory.accessory import Accessory
 from lib.slack.block.block import Block
 from lib.slack.text.label import Label
 
@@ -17,9 +18,9 @@ class ButtonStyle:
         return style in cls.ValidButtonStyles
 
 
-class Button(Block):
+class Button(Accessory):
     def __init__(self, text: str, style: str = ButtonStyle.DEFAULT, value: str = 'BUTTON'):
-        super().__init__(block_type='button')
+        super().__init__(accessory_type='button')
 
         if not ButtonStyle.is_valid(style):
             raise ValueError(f'Button style must be one of {ButtonStyle.ValidButtonStyles}! (Provided {style})')
@@ -28,10 +29,10 @@ class Button(Block):
         self.value = value
         self.style = style
 
-    def get_button(self) -> {}:
-        return {
-            'type': 'button',
-            'text': Label(self.text).get_label(),
-            'style': self.style,
-            'value': self.value
-        }
+    def get_accessory(self)-> {}:
+        accessory = super().get_accessory()
+        accessory['text'] = Label(self.text).get_label()
+        accessory['style'] = self.style
+        accessory['value'] = self.value
+
+        return accessory

@@ -4,9 +4,8 @@ from lib.domain.full_order import FullOrder
 from lib.domain.individual_order import IndividualOrder
 from lib.slack.block.divider import Divider
 from lib.slack.message.employee_order_message import EmployeeOrderMessage
-from lib.slack.text.label import Label
 from lib.slack.text.text import Text
-from lib.slack_impl.order_ready_button import OrderReadyButton
+from lib.slack_impl.accessory.order_ready import OrderReadyButton
 
 
 class RunningOrderMessage:
@@ -44,10 +43,14 @@ class RunningOrderMessage:
         # TODO: Only need to update the changed ones?
         running_order = self._get_running_order_section()
 
-        blocks = [Divider().get(), self._get_header_section(), Divider().get()]
+        blocks = []
+        blocks.append(Divider.get())
+        blocks.append(self._get_header_section())
+        blocks.append(Divider.get())
         blocks += [self.individual_messages[m].get_message() for m in self.individual_messages]
-        blocks.append(Divider().get())
+        blocks.append(Divider.get())
         blocks.append(running_order)
+        blocks.append(Divider.get())
 
         logger.debug(blocks)
 

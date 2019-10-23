@@ -1,5 +1,5 @@
-from lib.slack_impl.employee_ready_button import EmployeeReadyButton
-from lib.slack_impl.ready_button import ReadyButton
+from lib.slack_impl.accessory.employee_ready import EmployeeReadyButton
+from lib.slack_impl.accessory.ready import ReadyButton
 
 
 class OrderReadyButton(ReadyButton):
@@ -18,9 +18,9 @@ class OrderReadyButton(ReadyButton):
 
     @staticmethod
     def get():
-        return OrderReadyButton().get_button()
+        return OrderReadyButton().get_accessory()
 
-    def get_button(self):
+    def get_accessory(self):
         self.ready = self.get_ready()
 
-        return super().get_button()
+        return super().get_accessory()

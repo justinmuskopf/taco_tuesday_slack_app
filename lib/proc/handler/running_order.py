@@ -7,7 +7,8 @@ from lib.api.taco_tuesday_api_handler import TacoTuesdayApiHandler
 from lib.domain.domain_error import DomainError
 from lib.domain.full_order import FullOrder
 from lib.domain.individual_order import IndividualOrder
-from lib.slack_impl.running_order_message import RunningOrderMessage
+from lib.slack_impl.message.completed_order import CompletedOrderMessage
+from lib.slack_impl.message.running_order import RunningOrderMessage
 
 
 class RunningOrderError(DomainError):
@@ -70,9 +71,29 @@ class RunningOrderHandler:
         cls.update_running_order_message()
 
     @classmethod
+    def remove_order(cls, slack_id: str):
+        RunningOrderError.assert_order_is_running(True)
+        cls.RunningOrder.remove_employee_order(slack_id)
+        cls.update_running_order_message()
+
+    @classmethod
+    def has_employee_order(cls, slack_id):
+        RunningOrderError.assert_order_is_running(True)
+        return cls.RunningOrder.has_employee_order(slack_id)
+
+    @classmethod
+    def number_of_orders(cls):
+        RunningOrderError.assert_order_is_running(True)
+        return len(cls.RunningOrder.individual_orders)
+
+    @classmethod
     def send_running_order_message(cls):
         RunningOrderError.assert_first_message_sent(False)
         RunningOrderError.assert_order_is_running(True)
+
+        response = cls.SlackClient.chat_postMessage(channel=cls.ChannelId,
+                                                    text='<!here> I go, taking orders again!')
+        assert response['ok']
 
         message = RunningOrderMessage()
         pprint(message)
@@ -90,15 +111,21 @@ class RunningOrderHandler:
         cls.FirstMessageSent = True
 
     @classmethod
+    def _update_message(cls, blocks):
+        response = cls.SlackClient.chat_update(channel=cls.ChannelId,
+                                               ts=cls.TS,
+                                               blocks=blocks)
+
+        assert response['ok']
+
+
+    @classmethod
     def update_running_order_message(cls):
         RunningOrderError.assert_first_message_sent(True)
 
         message = RunningOrderMessage(cls.RunningOrder)
-        logger.debug(f'Running order message: {pformat(message)}')
 
-        response = cls.SlackClient.chat_update(channel=cls.ChannelId,
-                                               ts=cls.TS,
-                                               blocks=message.get_blocks())
+        cls._update_message(message.get_blocks())
 
         logger.info("Updated existing RunningOrderMessage!")
 
@@ -110,5 +137,9 @@ class RunningOrderHandler:
         TacoTuesdayApiHandler.submit_order(cls.RunningOrder)
 
         logger.debug(f'Submitted Order: {pformat(cls.RunningOrder.get_dict())}')
+
+        completed_message = CompletedOrderMessage(cls.RunningOrder)
+
+        cls._update_message(completed_message.get_blocks())
 
         cls.end_order()

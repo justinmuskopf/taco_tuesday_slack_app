@@ -1,9 +1,11 @@
+import asyncio
 import copy
 import time
 import threading
 
 from loguru import logger
 from slack import WebClient
+from asyncio import AbstractEventLoop
 
 from lib.api.taco_tuesday_api_handler import TacoTuesdayApiHandler, NoSuchEmployeeError
 from lib.domain.domain_error import DomainError
@@ -85,6 +87,7 @@ class EmployeeHandler:
     def _forgive_wrongdoer(cls, channel_id: str, ts):
         logger.debug('Forgiving wrongdoer!')
         try:
+            logger.debug(f'Deleting discipline message: ({channel_id}, {ts})')
             response = cls.SlackClient.chat_delete(channel=channel_id, ts=ts)
             assert response['ok']
             logger.debug('Forgave wrongdoer!')
@@ -96,7 +99,8 @@ class EmployeeHandler:
     @classmethod
     def _queue_discipline_for_forgiveness(cls, channel_id: str, ts, forgive_in: float):
         logger.debug(f'Forgiving wrongdoer in {forgive_in} seconds...')
-        threading.Timer(forgive_in, cls._forgive_wrongdoer, [channel_id, ts])
+        #asyncio.get_event_loop().create_task(cls._forgive_wrongdoer(channel_id, ts, forgive_in))
+        #threading.Timer(forgive_in, lambda: cls._forgive_wrongdoer(channel_id, ts)).start()
 
     @classmethod
     def discipline_employee(cls, slack_id: str, channel_id: str, text: str):
@@ -106,4 +110,4 @@ class EmployeeHandler:
         response = cls.SlackClient.chat_postEphemeral(user=slack_id, channel=channel_id, text=text)
         assert response['ok']
 
-        cls._queue_discipline_for_forgiveness(response['channel'], response['ts'], cls.DISCIPLINE_THRESHOLD)
+        cls._queue_discipline_for_forgiveness(channel_id, response['message_ts'], cls.DISCIPLINE_THRESHOLD)

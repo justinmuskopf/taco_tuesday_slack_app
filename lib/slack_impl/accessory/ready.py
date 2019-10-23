@@ -1,4 +1,4 @@
-from lib.slack.button.button import Button, ButtonStyle
+from lib.slack.accessory.button import Button, ButtonStyle
 
 
 class ReadyButton(Button):
@@ -24,7 +24,7 @@ class ReadyButton(Button):
     def is_ready_button_action(action_id: str) -> bool:
         return '_ReadyButton_actionId' in action_id
 
-    def get_button(self) -> {}:
+    def get_accessory(self) -> {}:
         if self.ready:
             self.style = ButtonStyle.PRIMARY
             self.text = self.ready_text
@@ -32,7 +32,7 @@ class ReadyButton(Button):
             self.style = ButtonStyle.DANGER
             self.text = self.not_ready_text
 
-        button = super().get_button()
+        button = super().get_accessory()
         button['action_id'] = self.action_id
 
         return button

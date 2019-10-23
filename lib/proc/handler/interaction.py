@@ -5,7 +5,7 @@ from slack import WebClient
 from lib.api.taco_tuesday_api_handler import TacoTuesdayApiHandler
 from lib.proc.handler.employee import EmployeeHandler
 from lib.proc.handler.running_order import RunningOrderHandler
-from lib.proc.view_parser import ViewParserError
+from lib.proc.view_parser import ViewParserSubmissionError
 from lib.proc.handler.action import ActionHandler
 from lib.proc.handler.view import ViewHandler
 
@@ -36,7 +36,7 @@ class InteractionHandler:
                 self._handle_view(interaction)
 
             return ''
-        except ViewParserError as e:
+        except ViewParserSubmissionError as e:
             return e.block_error.get_block_error()
 
     def order(self, channel_id: str, trigger_id: str):

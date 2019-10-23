@@ -21,7 +21,7 @@ class FullOrder(Order):
     def remove_order(self, order: IndividualOrder):
         [self.remove(t, order[t]) for t in order.tacos]
 
-        self.individual_orders[order.slack_id] = None
+        self.individual_orders.pop(order.slack_id)
 
     def remove_employee_order(self, slack_id: str):
         if not self.has_employee_order(slack_id): return

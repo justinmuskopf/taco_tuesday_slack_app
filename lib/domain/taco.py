@@ -44,6 +44,10 @@ class Taco:
         return Taco(self.taco_type, self.price.get())
 
     @staticmethod
+    def is_pastor(taco_type: str):
+        return taco_type == 'PASTOR'
+
+    @staticmethod
     def serialize_type(taco_type: str) -> str:
         serialized = taco_type.replace(' ', '_').upper()
         logger.debug(f'Serializing Taco Type: {taco_type} --> {serialized}')

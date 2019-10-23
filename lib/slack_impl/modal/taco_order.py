@@ -1,5 +1,5 @@
 from lib.api.taco_tuesday_api_handler import TacoTuesdayApiHandler
-from lib.slack_impl.taco_block import TacoBlock
+from lib.slack_impl.block.taco import TacoBlock
 from lib.slack.modal.modal import Modal
 
 

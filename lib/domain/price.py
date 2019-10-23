@@ -22,13 +22,11 @@ class Price:
 
         t = type(other)
         if t is Price:
-            self.price *= other.price
+            return Price(self.price * other.price)
         if t is int or t is float:
-            self.price *= other
+            return Price(self.price * other)
         else:
             raise InvalidPriceError(f'Cannot multiply value {other}')
-
-        return self
 
     def __add__(self, other):
         if other is None:
@@ -36,24 +34,23 @@ class Price:
 
         t = type(other)
         if t is Price:
-            self.price += other.price
+            return Price(self.price + other.price)
         elif t is int or t is float:
-            self.price += other
+            return Price(self.price + other)
         else:
             raise InvalidPriceError(f'Cannot add type {t} to Price!')
-
-        return self
 
     def __sub__(self, other):
         t = type(other)
         if t is Price:
-            self.price -= other.price
+            return Price(self.price - other.price)
         elif t is int or t is float:
-            self.price -= other
+            return Price(self.price - other)
         else:
             raise InvalidPriceError(f'Cannot add type {t} to Price!')
 
-        return self
+    def __round__(self, precision):
+        return Price(round(self.price, precision))
 
     def __str__(self):
         return f'${format(self.price, ".2f")}'

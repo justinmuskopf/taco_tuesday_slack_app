@@ -2,7 +2,7 @@ from loguru import logger
 
 from lib.domain.employee import Employee
 from lib.domain.order import Order
-from lib.slack_impl.employee_ready_button import EmployeeReadyButton
+from lib.slack_impl.accessory.employee_ready import EmployeeReadyButton
 
 
 class IndividualOrder(Order):
