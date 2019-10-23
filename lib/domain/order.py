@@ -32,7 +32,7 @@ class Order:
         self.tacos = {t: 0 for t in ValidTacos.get_tacos()}
 
     def __getitem__(self, taco_type: str):
-        return self._get_tacos(taco_type)
+        return self.get_tacos(taco_type)
 
     def __iter__(self):
         for taco_type in self.tacos: yield taco_type
@@ -50,7 +50,7 @@ class Order:
     def get_taco_name(taco_type: str):
         return ValidTacos.get_taco(taco_type).name
 
-    def _get_tacos(self, taco_type: str) -> int:
+    def get_tacos(self, taco_type: str) -> int:
         InvalidTacoTypeError.assert_type_valid(taco_type)
         return self.tacos[taco_type]
 

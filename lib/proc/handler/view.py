@@ -56,6 +56,7 @@ class ViewHandler:
 
     @classmethod
     def send_new_taco_order_modal(cls, trigger_id: str):
+        #modal = TacoOrderModal() if RunningOrderHandler.has_employee_order()
         cls.send_modal(trigger_id, TacoOrderModal())
 
     @classmethod

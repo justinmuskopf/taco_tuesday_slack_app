@@ -4,9 +4,9 @@ from lib.domain.taco import Taco
 
 
 class TacoBlock(InputBlock):
-    def __init__(self, taco_type: str, taco: Taco):
+    def __init__(self, taco_type: str, taco: Taco, initial_value: int = 0):
         super().__init__(label=Label.get(str(taco)),
-                         initial_value='0',
+                         initial_value=str(initial_value),
                          block_id=self.generate_block_id(taco_type),
                          action_id=self.generate_action_id(taco_type))
         self.taco = taco

@@ -95,7 +95,7 @@ class ViewParser:
     def parse_submission_into_feedback(cls, view_submission: {}) -> Feedback:
         cls.validate_submission(view_submission)
 
-        feedback_type =
+        #feedback_type =
 
         employee = cls.get_employee_from_submission(view_submission)
-        return Feedback(employee, )
+        #return Feedback(employee, )
