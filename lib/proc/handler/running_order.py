@@ -119,7 +119,6 @@ class RunningOrderHandler:
 
         assert response['ok']
 
-
     @classmethod
     def update_running_order_message(cls):
         RunningOrderError.assert_first_message_sent(True)

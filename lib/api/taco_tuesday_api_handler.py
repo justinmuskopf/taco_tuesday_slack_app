@@ -51,6 +51,7 @@ class TacoTuesdayApiHandler:
     @classmethod
     def do_api_interaction(cls, request_method, uri: str, headers={}, params={}, body_object={}):
         logger.debug(f'Performing HTTP Method {request_method} --> {uri} (params = {params}) (body = {body_object})')
+
         api_url = cls.form_api_url(uri)
 
         try:
@@ -69,6 +70,8 @@ class TacoTuesdayApiHandler:
         if cls.TACOS:
             return cls.TACOS
 
+        logger.debug('Initializing Tacos!')
+
         tacos = cls.do_api_interaction(cls.GET, '/tacos').json()
 
         # TODO: catch JSON error
@@ -83,11 +86,14 @@ class TacoTuesdayApiHandler:
 
     @classmethod
     def force_taco_refresh(cls):
+        logger.warn('Forcing Taco refresh...')
         cls.TACOS = None
         cls.get_tacos_from_api()
 
     @classmethod
     def submit_order(cls, order: FullOrder):
+        logger.debug('Submitting order to API!')
+
         response = cls.do_api_interaction(cls.POST,
                                           '/orders/full',
                                           params={'apiKey': cls.API_KEY},
@@ -95,8 +101,8 @@ class TacoTuesdayApiHandler:
 
         try:
             order_dict = response.json()
-            if order is None: raise TacoTuesdayApiError(f'Could not create order {order.get_dict()}!')
-
+            if order is None:
+                raise TacoTuesdayApiError(f'Could not create order {order.get_dict()}!')
         except Exception as e:
             raise TacoTuesdayApiError(f'An unknown error occurred when creating a full order: {e}!')
 
