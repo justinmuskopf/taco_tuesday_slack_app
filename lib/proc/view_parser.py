@@ -8,6 +8,7 @@ from lib.slack.block.block_error import BlockError
 from lib.domain.individual_order import IndividualOrder
 from lib.slack_impl.block.taco import TacoBlock
 
+
 class ViewParserError(DomainError):
     def __init__(self, message: str):
         super().__init__(ViewParser, message)

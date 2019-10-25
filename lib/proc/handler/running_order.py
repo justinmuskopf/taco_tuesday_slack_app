@@ -7,6 +7,7 @@ from lib.api.taco_tuesday_api_handler import TacoTuesdayApiHandler
 from lib.domain.domain_error import DomainError
 from lib.domain.full_order import FullOrder
 from lib.domain.individual_order import IndividualOrder
+from lib.proc.channel_validator import ChannelValidator, ChannelValidationError
 from lib.slack_impl.message.completed_order import CompletedOrderMessage
 from lib.slack_impl.message.running_order import RunningOrderMessage
 
@@ -42,9 +43,9 @@ class RunningOrderHandler:
     @classmethod
     def start_order(cls, channel_id: str):
         try:
-            cls.SlackClient.channels_info(channel=channel_id)
-        except SlackApiError:
-            raise RunningOrderError(f'Invalid channel ID: {channel_id} !')
+            ChannelValidator.validate(channel_id)
+        except ChannelValidationError:
+            raise RunningOrderError(f'Could not validate channel: {channel_id}!')
 
         cls.RunningOrder = FullOrder()
         cls.OrderIsRunning = True

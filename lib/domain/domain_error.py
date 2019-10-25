@@ -16,3 +16,8 @@ class DomainError(RuntimeError):
 class DomainValueError(DomainError, ValueError):
     def __init__(self, reporter: type, key: str, value):
         super().__init__(reporter, 'invalid value: "{key}": "{value}"!')
+
+
+class NoSlackClientDefinedError(DomainError):
+    def __init__(self, reporter):
+        super().__init__(reporter, 'No valid Slack WebClient defined!')
