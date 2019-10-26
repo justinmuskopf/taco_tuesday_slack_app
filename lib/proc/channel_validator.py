@@ -1,4 +1,6 @@
 from loguru import logger
+from slack import WebClient
+from slack.errors import SlackApiError
 
 from lib.domain.domain_error import DomainError
 
@@ -26,16 +28,8 @@ class ChannelValidator:
     @classmethod
     def validate(cls, channel_id: str):
         try:
-            try:
-                cls.SlackClient.channels_info(channel=channel_id)
-            except SlackApiError:
-                logger.warn(f'No public channel found for ID {channel_id}... Checking Private!')
-
-            # TODO: On a plane without slackclient installed, validate this method call
-            cls.SlackClient.groups_info(group=channel_id)
-
-        # TODO: does this throw a more descriptive exception?
+            cls.SlackClient.conversations_info(channel=channel_id)
         except SlackApiError:
-            raise ChannelValidationError(channel_id)
+            ChannelValidationError(channel_id)
 
         return True
