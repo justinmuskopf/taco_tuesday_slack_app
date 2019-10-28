@@ -7,7 +7,6 @@ class EmployeeReadyButton(ReadyButton):
     def __init__(self, slack_id: str, ready: bool = False):
         super().__init__(ready_text='Ready', not_ready_text='Not Ready', prefix=slack_id, ready=ready)
         self.slack_id = slack_id
-
         EmployeeReadyButton.ReadyEmployees[slack_id] = self.ready
 
     @classmethod

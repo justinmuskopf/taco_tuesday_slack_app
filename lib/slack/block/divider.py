@@ -7,4 +7,5 @@ class Divider:
         return Divider().get_divider()
 
     def get_divider(self):
+        Button
         return self.ONE_DIVIDER_TO_DIVIDE_THEM_ALL.copy()

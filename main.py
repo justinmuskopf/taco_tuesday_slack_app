@@ -8,6 +8,7 @@ import os
 
 from lib.api.taco_tuesday_api_handler import TacoTuesdayApiHandler
 from lib.proc.handler.employee import EmployeeHandler
+from lib.proc.handler.error import ErrorHandler
 from lib.proc.handler.interaction import InteractionHandler
 from lib.proc.handler.running_order import RunningOrderHandler
 from lib.proc.handler.view import ViewHandler
@@ -15,6 +16,7 @@ from lib.proc.handler.view import ViewHandler
 API_HANDLER = TacoTuesdayApiHandler()
 SLACK_BOT_TOKEN = os.environ["SLACK_BOT_TOKEN"]
 LOG_DIR = os.environ['TT_SLACK_LOG_DIR']
+
 IH = InteractionHandler(SLACK_BOT_TOKEN)
 
 # Flask web server for incoming traffic from Slack
@@ -46,24 +48,26 @@ def order_slash_command():
                 ViewHandler.send_order_cancel_modal(trigger_id)
         else:
             IH.order(channel_id, trigger_id)
-    except Exception as e:
-        logger.error(f'Caught bubbled up: {e}')
-        return make_response(str(e), 200)
 
-    return make_response("", 200)
+        return make_response("", 200)
+    except Exception as e:
+        return ErrorHandler.handle(e)
 
 
 @app.route("/slack/interact", methods=["POST"])
 def message_actions():
-    # Parse the request payload
-    payload = json.loads(request.form["payload"])
+    try:
+        # Parse the request payload
+        payload = json.loads(request.form["payload"])
 
-    logger.debug(pformat(f'Payload: \n{payload}'))
+        logger.debug(pformat(f'Payload: \n{payload}'))
 
-    response = IH.handle_interaction(payload)
-    if response: response = jsonify(response)
+        response = IH.handle_interaction(payload)
+        if response: response = jsonify(response)
 
-    return response
+        return response
+    except Exception as e:
+        return ErrorHandler.handle(e)
 
 
 if __name__ == "__main__":

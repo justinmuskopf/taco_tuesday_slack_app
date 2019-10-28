@@ -10,6 +10,7 @@ from asyncio import AbstractEventLoop
 from lib.api.taco_tuesday_api_handler import TacoTuesdayApiHandler, NoSuchEmployeeError
 from lib.domain.domain_error import DomainError
 from lib.domain.employee import Employee, EmployeeNameError
+from lib.proc.handler.base import BaseHandler
 
 
 class EmployeeTrackerError(DomainError):
@@ -22,15 +23,15 @@ class EmployeeAlreadyExistsError(EmployeeTrackerError):
         super().__init__(f'An employee with Slack ID {slack_id} already exists!')
 
 
-class EmployeeHandler:
+class EmployeeHandler(BaseHandler):
     EMPLOYEES: {str: Employee} = {}
     DISCIPLINE_THRESHOLD = 10
     DISCIPLINEES: {str: float} = {}
-    SlackClient: WebClient = None
+    #SlackClient: WebClient = None
 
-    def __init__(self, slack_client: WebClient):
-        if EmployeeHandler.SlackClient is None:
-            EmployeeHandler.SlackClient = slack_client
+    # def __init__(self, slack_client: WebClient):
+    #     if EmployeeHandler.SlackClient is None:
+    #         EmployeeHandler.SlackClient = slack_client
 
     @classmethod
     def has_employee(cls, slack_id: str):

@@ -1,6 +1,6 @@
 from loguru import logger
-from slack import WebClient
 
+from lib.proc.handler.base import BaseHandler
 from lib.proc.handler.employee import EmployeeHandler
 from lib.proc.handler.running_order import RunningOrderHandler
 from lib.proc.handler.view import ViewHandler
@@ -9,10 +9,7 @@ from lib.slack_impl.accessory.order_ready import OrderReadyButton
 from lib.slack_impl.accessory.ready import ReadyButton
 
 
-class ActionHandler:
-    def __init__(self, slack_client: WebClient):
-        self.slack_client = slack_client
-
+class ActionHandler(BaseHandler):
     @staticmethod
     def _is_block_action(interaction: {}) -> bool:
         return 'type' in interaction and interaction['type'] == 'block_actions'
@@ -82,13 +79,10 @@ class ActionHandler:
 
                 cls._handle_button_action(action_id, channel_id, slack_id, trigger_id)
 
-    def handle(self, action: {}):
-        if self._is_message_action(action):
-            return self._handle_message_action(action)
+    @classmethod
+    def handle(cls, action: {}):
+        if cls._is_message_action(action):
+            return cls._handle_message_action(action)
 
-        if self._is_block_action(action):
-            return self._handle_block_actions(action)
-
-
-
-
+        if cls._is_block_action(action):
+            return cls._handle_block_actions(action)
