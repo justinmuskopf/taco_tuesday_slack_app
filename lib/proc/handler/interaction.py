@@ -3,9 +3,11 @@ from loguru import logger
 from slack import WebClient
 
 from lib.api.taco_tuesday_api_handler import TacoTuesdayApiHandler
-from lib.block.view_parser_error import ViewParserError
-from lib.proc.action_handler import ActionHandler
-from lib.proc.view_handler import ViewHandler
+from lib.proc.handler.employee import EmployeeHandler
+from lib.proc.handler.running_order import RunningOrderHandler
+from lib.proc.view_parser import ViewParserSubmissionError
+from lib.proc.handler.action import ActionHandler
+from lib.proc.handler.view import ViewHandler
 
 
 class InteractionHandler:
@@ -13,7 +15,9 @@ class InteractionHandler:
         slack_client = WebClient(slack_bot_token)
         self.action_handler = ActionHandler(slack_client)
         self.view_handler = ViewHandler(slack_client)
+        self.running_order_handler = RunningOrderHandler(slack_client)
         self.api_handler = TacoTuesdayApiHandler()
+        self.employee_handler = EmployeeHandler(slack_client)
 
     def _handle_action(self, action: {}):
         logger.debug('Handling action...')
@@ -32,8 +36,11 @@ class InteractionHandler:
                 self._handle_view(interaction)
 
             return ''
-        except ViewParserError as e:
+        except ViewParserSubmissionError as e:
             return e.block_error.get_block_error()
 
-    def send_taco_modal(self, trigger_id: str):
+    def order(self, channel_id: str, trigger_id: str):
+        if not self.running_order_handler.OrderIsRunning:
+            self.running_order_handler.start_order(channel_id)
+
         self.view_handler.send_new_taco_order_modal(trigger_id)

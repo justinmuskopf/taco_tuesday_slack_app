@@ -15,7 +15,7 @@ class ActionParser:
     def is_button_action(self, action: {}) -> bool:
         if self.is_invalid_action(action): return False
 
-        return action['type'] == 'button'
+        return action['type'] == 'accessory'
 
     def is_of_block(self, action: {}, block_id: str) -> bool:
         if self.is_invalid_action(action): return False
