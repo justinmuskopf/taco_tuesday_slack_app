@@ -9,7 +9,7 @@ from asyncio import AbstractEventLoop
 
 from lib.api.taco_tuesday_api_handler import TacoTuesdayApiHandler, NoSuchEmployeeError
 from lib.domain.domain_error import DomainError
-from lib.domain.employee import Employee, EmployeeNameError
+from lib.domain.employee import Employee
 from lib.proc.handler.base import BaseHandler
 
 

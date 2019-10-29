@@ -9,8 +9,7 @@ class EmployeeOrderMessage:
         self.order = order
 
     def _get_order_string(self, pastor_price: float) -> str:
-        name = self.employee.name
-        name_string = f'{name.nick_name}' if name.nick_name else str(name)
+        name_string = f'{self.employee.nick_name}' if self.employee.nick_name else self.employee.full_name
 
         return f'*{name_string}*\n{self.order.get_order_string(pastor_price)}'
 

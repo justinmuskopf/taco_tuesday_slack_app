@@ -1,3 +1,5 @@
+import os
+
 from loguru import logger
 
 from lib.domain.domain_error import DomainError
@@ -21,6 +23,8 @@ class ViewParserSubmissionError(ViewParserError):
 
 
 class ViewParser:
+    MAX_SINGLE_TACO = int(os.environ['TT_MAX_SINGLE_TACO'])
+
     @staticmethod
     def get_employee_from_submission(view_submission: {}) -> Employee:
         return EmployeeHandler.get_employee(view_submission['user']['id'])
@@ -78,6 +82,8 @@ class ViewParser:
 
             if num_tacos < 0:
                 block_error.add_error(block_id, 'Tacos can only be eaten in positive numbers.')
+            elif num_tacos > cls.MAX_SINGLE_TACO:
+                block_error.add_error(block_id, "HAHA I ORDERED A LOT OF TACOS TO TRY AND BREAK THE STUPID TACO APP!")
             elif num_tacos > 0:
                 all_zero = False
                 taco_type = TacoBlock.degenerate_block_id(block_id)

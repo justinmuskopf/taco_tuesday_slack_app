@@ -118,7 +118,10 @@ class TacoTuesdayApiHandler:
 
             nick_name = None if 'nickName' not in employee_dict else employee_dict['nickName']
 
-            return Employee(slack_id, employee_dict['firstName'], employee_dict['lastName'], nick_name, api_id=employee_dict['id'])
+            return Employee(slack_id=slack_id,
+                            full_name=employee_dict['fullName'],
+                            nick_name=nick_name,
+                            api_id=employee_dict['id'])
         except KeyError as e:
             logger.debug(f'KeyError: {e}')
             raise NoSuchEmployeeError(slack_id)
