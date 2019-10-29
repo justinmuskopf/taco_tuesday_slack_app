@@ -2,11 +2,13 @@ from loguru import logger
 
 from lib.proc.handler.base import BaseHandler
 from lib.proc.handler.employee import EmployeeHandler
+from lib.proc.handler.feedback import FeedbackHandler
 from lib.proc.handler.running_order import RunningOrderHandler
 from lib.proc.handler.view import ViewHandler
 from lib.slack_impl.accessory.employee_ready import EmployeeReadyButton
 from lib.slack_impl.accessory.order_ready import OrderReadyButton
 from lib.slack_impl.accessory.ready import ReadyButton
+from lib.slack_impl.modal.feedback import FeedbackModal
 
 
 class ActionHandler(BaseHandler):
@@ -66,6 +68,10 @@ class ActionHandler(BaseHandler):
             return ViewHandler.send_feedback_modal(trigger_id)
 
     @classmethod
+    def _is_select_action(cls, action):
+        return action['action_id'] == 'static_select'
+
+    @classmethod
     def _handle_block_actions(cls, action_response):
         actions = action_response['actions']
         for action in actions:
@@ -78,6 +84,10 @@ class ActionHandler(BaseHandler):
                 action_id = action['action_id']
 
                 cls._handle_button_action(action_id, channel_id, slack_id, trigger_id)
+            elif cls._is_select_action(action):
+                action_id = action['action_id']
+                if FeedbackModal.is_feedback_select_action(action_id):
+                    FeedbackHandler.register_type_change(action_id=action_id, new_type=action['text']['text'])
 
     @classmethod
     def handle(cls, action: {}):

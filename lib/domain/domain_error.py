@@ -5,13 +5,13 @@ class DomainError(RuntimeError):
     def __init__(self, reporter: type = None, message: str = None):
         self.reporter = reporter
 
-        err = f'(Reporter: {reporter.__qualname__ if reporter else "Unknown"}) '
-        if message is None or message is '':
+        err = ''
+        if not message:
             err += 'An unknown domain error occurred!'
         else:
             err += message
 
-        logger.error(err)
+        logger.error(f'(Reporter: {reporter.__qualname__ if reporter else "Unknown"}) {err})')
         super().__init__(err)
 
 

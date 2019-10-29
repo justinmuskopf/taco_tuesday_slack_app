@@ -20,8 +20,8 @@ class IndividualOrder(Order):
 
         EmployeeReadyButton.set_ready(self.slack_id, False)
 
-    def get_dict(self):
-        d = super().get_dict()
+    def get_dict(self, pastor_price: float):
+        d = super().get_dict(pastor_price)
         d['employee'] = self.employee.get_dict()
 
         return d

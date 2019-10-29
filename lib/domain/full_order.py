@@ -1,7 +1,10 @@
 import copy
 
+from loguru import logger
+
 from lib.domain.individual_order import IndividualOrder
 from lib.domain.order import Order
+from lib.domain.taco import ValidTacos
 
 
 class FullOrder(Order):
@@ -38,8 +41,27 @@ class FullOrder(Order):
     def get_orders(self) -> [IndividualOrder]:
         return copy.deepcopy(self.individual_orders).values()
 
-    def get_dict(self):
-        d = super().get_dict()
-        d['individualOrders'] = [o.get_dict() for o in self.individual_orders.values()]
+    def get_individual_pastor_price(self) -> float:
+        num_pastor = self.tacos['PASTOR']
+        base_pastor_price = ValidTacos.get_taco_price('PASTOR').get()
+        if num_pastor < 10:
+            return base_pastor_price
+
+        num_full_price = num_pastor % 10
+        num_discounted = num_pastor - num_full_price
+
+        total_pastor_price = (num_full_price * base_pastor_price) + num_discounted
+
+        logger.debug(f'{num_full_price}, {num_discounted}, {total_pastor_price}, {num_pastor}')
+
+        return float(total_pastor_price) / num_pastor
+
+    def get_full_order_dict(self):
+        pastor_price = self.get_individual_pastor_price()
+        d = super().get_dict(pastor_price)
+        d['individualOrders'] = [o.get_dict(pastor_price) for o in self.individual_orders.values()]
 
         return d
+
+    def get_full_order_string(self):
+        return self.get_order_string(self.get_individual_pastor_price())

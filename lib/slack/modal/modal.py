@@ -3,12 +3,17 @@ from lib.slack.text.label import Label
 
 
 class Modal:
+    ID = 10000
+
     def __init__(self, title_text: str, callback_id: str, submit_text: str = 'Submit', close_text: str = 'Cancel'):
         self.title_text = title_text
         self.submit_text = submit_text
         self.close_text = close_text
-        self.callback_id = callback_id
+        self.uuid = Modal.ID + 1
+        self.callback_id = f'{callback_id}_{self.uuid}'
         self.blocks = []
+
+        Modal.ID += 1
 
     @staticmethod
     def get(title_text: str, submit_text: str = 'Submit', close_text: str = 'Cancel'):

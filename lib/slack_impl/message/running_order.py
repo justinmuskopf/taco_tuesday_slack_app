@@ -35,7 +35,7 @@ class RunningOrderMessage:
     def _get_running_order_section(self):
         return {
             'type': 'section',
-            'text': Text.get(f'*Total*\n{self.order}', markdown_enabled=True),
+            'text': Text.get(f'*Total*\n{self.order.get_full_order_string()}', markdown_enabled=True),
             'accessory': OrderReadyButton.get()
         }
 
@@ -43,11 +43,13 @@ class RunningOrderMessage:
         # TODO: Only need to update the changed ones?
         running_order = self._get_running_order_section()
 
+        pastor_price = self.order.get_individual_pastor_price()
+
         blocks = []
         blocks.append(Divider.get())
         blocks.append(self._get_header_section())
         blocks.append(Divider.get())
-        blocks += [self.individual_messages[m].get_message() for m in self.individual_messages]
+        blocks += [self.individual_messages[m].get_message(pastor_price) for m in self.individual_messages]
         blocks.append(Divider.get())
         blocks.append(running_order)
         blocks.append(Divider.get())

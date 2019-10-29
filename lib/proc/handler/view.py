@@ -1,3 +1,5 @@
+import json
+import os
 import threading
 
 from slack import WebClient
@@ -6,6 +8,7 @@ from lib.api.taco_tuesday_api_handler import TacoTuesdayApiHandler
 from lib.domain.domain_error import DomainError
 from lib.domain.taco import Taco
 from lib.proc.handler.base import BaseHandler
+from lib.proc.handler.feedback import FeedbackHandler
 from lib.proc.handler.running_order import RunningOrderHandler
 from lib.slack.modal.modal import Modal
 from lib.slack_impl.modal.feedback import FeedbackModal
@@ -28,6 +31,8 @@ class ViewHandler(BaseHandler):
 
     @classmethod
     def handle_submission(cls, view_submission: {}):
+        logger.debug(json.dumps(view_submission))
+
         logger.debug(f'Given view: {view_submission}')
         callback_id = view_submission['view']['callback_id']
         slack_id = view_submission['user']['id']
@@ -35,16 +40,14 @@ class ViewHandler(BaseHandler):
         if TacoOrderModal.is_taco_order_submission(callback_id):
             order = cls.ViewParser.parse_submission_into_individual_order(view_submission)
             RunningOrderHandler.add_order(order)
-
-            raise DomainError(reporter=ViewHandler, message='Take that sucker')
-
         elif OrderSubmitModal.is_order_submit_submission(callback_id):
             logger.warning('Handling forced Order submission!')
             RunningOrderHandler.submit_order()
         elif OrderCancelModal.is_order_cancel_submission(callback_id):
             RunningOrderHandler.remove_order(slack_id)
         elif FeedbackModal.is_feedback_submission(callback_id):
-            cls.ViewParser.parse_submission_into_feedback(view_submission)
+            feedback = cls.ViewParser.parse_submission_into_feedback(view_submission)
+            FeedbackHandler.handle(feedback)
 
     @classmethod
     def handle(cls, view: {}):

@@ -14,4 +14,4 @@ class OrderSubmitModal(Modal):
 
     @classmethod
     def is_order_submit_submission(cls, callback_id: str):
-        return callback_id == cls.CALLBACK_ID
+        return callback_id.startswith(cls.CALLBACK_ID)

@@ -89,7 +89,8 @@ class RunningOrderHandler(BaseHandler):
         RunningOrderError.assert_order_is_running(True)
 
         response = cls.SlackClient.chat_postMessage(channel=cls.ChannelId,
-                                                    text='<!here> I go, taking orders again!')
+                                                    #text='<!here> I go, taking orders again!')
+                                                    text='test')
         assert response['ok']
 
         message = RunningOrderMessage()
@@ -132,7 +133,7 @@ class RunningOrderHandler(BaseHandler):
 
         TacoTuesdayApiHandler.submit_order(cls.RunningOrder)
 
-        logger.debug(f'Submitted Order: {pformat(cls.RunningOrder.get_dict())}')
+        logger.debug(f'Submitted Order: {pformat(cls.RunningOrder.get_full_order_dict())}')
 
         completed_message = CompletedOrderMessage(cls.RunningOrder)
 

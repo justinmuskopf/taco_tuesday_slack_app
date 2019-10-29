@@ -15,11 +15,10 @@ class TacoOrderModal(Modal):
 
     def _init_blocks(self, tacos) -> [TacoBlock]:
         if self.order is not None:
-            return [TacoBlock(taco, tacos[taco], initial_value=self.order.get_tacos()).get_block() for taco in tacos.keys()]
+            return [TacoBlock(taco, tacos[taco], initial_value=self.order.get_tacos(taco)).get_block() for taco in tacos.keys()]
         else:
             return [TacoBlock(taco, tacos[taco]).get_block() for taco in tacos.keys()]
 
-
     @classmethod
     def is_taco_order_submission(cls, callback_id: str):
-        return callback_id == cls.CALLBACK_ID
+        return callback_id.startswith(cls.CALLBACK_ID)

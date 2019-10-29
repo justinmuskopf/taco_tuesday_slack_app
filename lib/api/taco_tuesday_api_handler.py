@@ -97,7 +97,7 @@ class TacoTuesdayApiHandler:
         response = cls.do_api_interaction(cls.POST,
                                           '/orders/full',
                                           params={'apiKey': cls.API_KEY},
-                                          body_object=order.get_dict())
+                                          body_object=order.get_full_order_dict())
 
         try:
             order_dict = response.json()

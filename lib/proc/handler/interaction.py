@@ -2,6 +2,7 @@ from loguru import logger
 
 from slack import WebClient
 
+from lib.proc.channel_validator import ChannelValidator
 from lib.proc.handler.base import BaseHandler
 from lib.proc.handler.running_order import RunningOrderHandler
 from lib.proc.view_parser import ViewParserSubmissionError
@@ -13,6 +14,7 @@ class InteractionHandler(BaseHandler):
     def __init__(self, slack_bot_token):
         slack_client = WebClient(slack_bot_token)
         super().__init__(slack_client)
+        ChannelValidator(slack_client)
 
     @staticmethod
     def _handle_action(action: {}):

@@ -68,15 +68,12 @@ class Order:
         if taco_type not in self.tacos:
             self.tacos[taco_type] = 0
 
-        taco_price = self._get_price_for_tacos(taco_type, count)
         self.tacos[taco_type] += count
-        self.price += taco_price
 
-        # The deal makes these tacos $1, just add the count
-        if Taco.is_pastor(taco_type):
-            self.deal_price += count
-        else:
-            self.deal_price += taco_price
+        # Exclude Pastor for later when calculating deal
+        if not Taco.is_pastor(taco_type):
+            taco_price = self._get_price_for_tacos(taco_type, count)
+            self.price += taco_price
 
     def remove(self, taco_type: str, count: int):
         if not self._is_valid_taco_change(taco_type, count, False): return
@@ -84,34 +81,27 @@ class Order:
         if taco_type not in self.tacos:
             raise TacoCountError(taco_type)
 
-        taco_price = self._get_price_for_tacos(taco_type, count)
         self.tacos[taco_type] -= count
-        self.price -= taco_price
 
-        if Taco.is_pastor(taco_type):
-            self.deal_price -= count
-        else:
-            self.deal_price -= taco_price
+        if not Taco.is_pastor(taco_type):
+            taco_price = self._get_price_for_tacos(taco_type, count)
+            self.price -= taco_price
 
     def remove_taco_type(self, taco_type: str):
         self.remove(taco_type, self.tacos[taco_type])
 
-    def _qualifies_for_pastor_deal(self):
-        return self.tacos['PASTOR'] >= 10 and self.tacos['PASTOR'] % 10 == 0
+    def _get_price_based_on_deal(self, pastor_price: float):
+        pastor_total = self.tacos['PASTOR'] * pastor_price
 
-    def _get_price_based_on_deal(self):
-        if self._qualifies_for_pastor_deal():
-            return round(self.deal_price * self.TAX_RATE, 2)
+        return round((self.price + pastor_total) * self.TAX_RATE, 2)
 
-        return round(self.price * self.TAX_RATE, 2)
-
-    def get_dict(self) -> {}:
+    def get_dict(self, pastor_price: float) -> {}:
         d = {Taco.serialize_type_into_api_key(t): self.tacos[t] for t in self.tacos}
-        d['total'] = self._get_price_based_on_deal().get()
+        d['total'] = self._get_price_based_on_deal(pastor_price).get()
 
         return d
 
-    def __str__(self):
+    def get_order_string(self, pastor_price: float):
         # ['4 Barbacoa', '3 Tripa', '4 Lengua', '2 Chicken Fajita']
         taco_number_strings = []
         for taco_type in self.tacos:
@@ -119,4 +109,4 @@ class Order:
             taco_number_strings.append(f'{self.tacos[taco_type]} {self.get_taco_name(taco_type)}')
 
         # '4 Barbacoa, 3 Tripa, 4 Lengua, 2 Chicken Fajita - *$18.42*'
-        return ', '.join(taco_number_strings) + f' - *{self._get_price_based_on_deal()}*'
+        return ', '.join(taco_number_strings) + f' - *{self._get_price_based_on_deal(pastor_price)}*'

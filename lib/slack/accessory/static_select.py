@@ -3,10 +3,11 @@ from lib.slack.text.label import Label
 
 
 class StaticSelectBlock(Accessory):
-    def __init__(self, unique=False):
+    def __init__(self, unique=False, action_id: str = None):
         super().__init__('static_select')
         self.unique = unique
         self.options = set() if unique else []
+        self.action_id = action_id
 
     @staticmethod
     def _get_placeholder():
@@ -33,5 +34,8 @@ class StaticSelectBlock(Accessory):
         accessory = super().get_accessory()
         accessory['placeholder'] = self._get_placeholder()
         accessory['options'] = list(self.options) if self.unique else self.options
+
+        if self.action_id is not None:
+            accessory['action_id'] = self.action_id
 
         return accessory
