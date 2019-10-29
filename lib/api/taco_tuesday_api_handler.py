@@ -137,8 +137,7 @@ class TacoTuesdayApiHandler:
 
             employee_dict = cls.get_json_from_response(response)
             assert employee_dict['slackId'] == employee.slack_id
-            assert employee_dict['firstName'] == employee.name.first_name
-            assert employee_dict['lastName'] == employee.name.last_name
+            assert employee_dict['fullName'] == employee.full_name
 
             logger.info(f'Created Employee: {employee}!')
 
