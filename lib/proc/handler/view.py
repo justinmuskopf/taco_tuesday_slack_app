@@ -1,7 +1,11 @@
+import threading
+
 from slack import WebClient
 from loguru import logger
 from lib.api.taco_tuesday_api_handler import TacoTuesdayApiHandler
+from lib.domain.domain_error import DomainError
 from lib.domain.taco import Taco
+from lib.proc.handler.base import BaseHandler
 from lib.proc.handler.running_order import RunningOrderHandler
 from lib.slack.modal.modal import Modal
 from lib.slack_impl.modal.feedback import FeedbackModal
@@ -11,14 +15,10 @@ from lib.slack_impl.modal.taco_order import TacoOrderModal
 from lib.proc.view_parser import ViewParser
 from pprint import pformat
 
-class ViewHandler:
-    TACOS: [Taco] = TacoTuesdayApiHandler.get_tacos_from_api()
-    SlackClient: WebClient = None
-    ViewParser: ViewParser = ViewParser()
 
-    def __init__(self, slack_client: WebClient):
-        if ViewHandler.SlackClient is None:
-            ViewHandler.SlackClient = slack_client
+class ViewHandler(BaseHandler):
+    TACOS: [Taco] = TacoTuesdayApiHandler.get_tacos_from_api()
+    ViewParser: ViewParser = ViewParser()
 
     @staticmethod
     def is_view_interaction(interaction):
@@ -35,6 +35,9 @@ class ViewHandler:
         if TacoOrderModal.is_taco_order_submission(callback_id):
             order = cls.ViewParser.parse_submission_into_individual_order(view_submission)
             RunningOrderHandler.add_order(order)
+
+            raise DomainError(reporter=ViewHandler, message='Take that sucker')
+
         elif OrderSubmitModal.is_order_submit_submission(callback_id):
             logger.warning('Handling forced Order submission!')
             RunningOrderHandler.submit_order()
@@ -56,7 +59,6 @@ class ViewHandler:
 
     @classmethod
     def send_new_taco_order_modal(cls, trigger_id: str):
-        #modal = TacoOrderModal() if RunningOrderHandler.has_employee_order()
         cls.send_modal(trigger_id, TacoOrderModal())
 
     @classmethod

@@ -7,6 +7,7 @@ from lib.api.taco_tuesday_api_handler import TacoTuesdayApiHandler
 from lib.domain.domain_error import DomainError
 from lib.domain.full_order import FullOrder
 from lib.domain.individual_order import IndividualOrder
+from lib.proc.handler.base import BaseHandler
 from lib.proc.channel_validator import ChannelValidator, ChannelValidationError
 from lib.slack_impl.message.completed_order import CompletedOrderMessage
 from lib.slack_impl.message.running_order import RunningOrderMessage
@@ -28,17 +29,12 @@ class RunningOrderError(DomainError):
             raise RunningOrderError(f'First message {"has not" if should_be else "has already"} been sent!')
 
 
-class RunningOrderHandler:
+class RunningOrderHandler(BaseHandler):
     TS: str = None
     RunningOrder: FullOrder = None
-    SlackClient: WebClient = None
     OrderIsRunning: bool = False
     FirstMessageSent: bool = False
     ChannelId: str = None
-
-    def __init__(self, slack_client: WebClient):
-        if RunningOrderHandler.SlackClient is None:
-            RunningOrderHandler.SlackClient = slack_client
 
     @classmethod
     def start_order(cls, channel_id: str):

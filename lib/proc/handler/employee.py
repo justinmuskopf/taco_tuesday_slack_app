@@ -27,11 +27,6 @@ class EmployeeHandler(BaseHandler):
     EMPLOYEES: {str: Employee} = {}
     DISCIPLINE_THRESHOLD = 10
     DISCIPLINEES: {str: float} = {}
-    #SlackClient: WebClient = None
-
-    # def __init__(self, slack_client: WebClient):
-    #     if EmployeeHandler.SlackClient is None:
-    #         EmployeeHandler.SlackClient = slack_client
 
     @classmethod
     def has_employee(cls, slack_id: str):
