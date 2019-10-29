@@ -1,21 +1,27 @@
-from lib.api.taco_tuesday_api_handler import TacoTuesdayApiHandler
+from loguru import logger
+
+from lib.domain.employee import Employee
+from lib.domain.order import Order
+from lib.slack_impl.accessory.employee_ready import EmployeeReadyButton
 
 
-class IndividualOrder:
-    TACOS = TacoTuesdayApiHandler.get_tacos_from_api()
+class IndividualOrder(Order):
+    ID = 1000
 
-    def __init__(self):
-        self.price: float = 0
-        self.tacos = {}
+    def __init__(self, employee: Employee):
+        super().__init__()
 
-    def add(self, taco_type: str, count: int):
-        # TODO: Throw
-        if count <= 0:
-            return
+        IndividualOrder.ID += 1
+        self.internal_id = IndividualOrder.ID
+        logger.debug(f'Creating individual order, internal_id = {self.internal_id}')
 
-        price = self.TACOS[taco_type]['price']
-        if taco_type not in self.tacos:
-            self.tacos[taco_type] = 0
+        self.employee = employee
+        self.slack_id = employee.slack_id
 
-        self.tacos[taco_type] += count
-        self.price += count * price
+        EmployeeReadyButton.set_ready(self.slack_id, False)
+
+    def get_dict(self, pastor_price: float):
+        d = super().get_dict(pastor_price)
+        d['employee'] = self.employee.get_dict()
+
+        return d
