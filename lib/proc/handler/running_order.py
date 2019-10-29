@@ -89,8 +89,7 @@ class RunningOrderHandler(BaseHandler):
         RunningOrderError.assert_order_is_running(True)
 
         response = cls.SlackClient.chat_postMessage(channel=cls.ChannelId,
-                                                    #text='<!here> I go, taking orders again!')
-                                                    text='test')
+                                                    text='<!here> I go, taking orders again!')
         assert response['ok']
 
         message = RunningOrderMessage()
