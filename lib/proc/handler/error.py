@@ -5,12 +5,13 @@ from loguru import logger
 from slack import WebClient
 from flask import make_response, json
 
+from config.slack_config import TacoTuesdaySlackConfig
 from lib.proc.handler.base import BaseHandler
 from lib.slack_impl.message.error import ErrorMessage
 
 
 class ErrorHandler(BaseHandler):
-    DEBUG_CHANNEL = os.environ['SLACK_DEBUG_CHANNEL']
+    DEBUG_CHANNEL = TacoTuesdaySlackConfig().get_debug_channel()
     RESPONSES = [
         "Mr. Stark, I don't feel so good...",
         "Uh-oh, something went horribly wrong!",

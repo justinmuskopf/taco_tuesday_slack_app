@@ -2,6 +2,7 @@ import os
 
 from loguru import logger
 
+from config.order_config import TacoTuesdayOrderConfig
 from lib.domain.domain_error import DomainError
 from lib.domain.employee import Employee
 from lib.domain.feedback import Feedback
@@ -23,7 +24,7 @@ class ViewParserSubmissionError(ViewParserError):
 
 
 class ViewParser:
-    MAX_SINGLE_TACO = int(os.environ['TT_MAX_SINGLE_TACO'])
+    MAX_SINGLE_TACO = int(TacoTuesdayOrderConfig().get_max_single_taco())
 
     @staticmethod
     def get_employee_from_submission(view_submission: {}) -> Employee:

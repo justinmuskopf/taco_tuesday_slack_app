@@ -1,3 +1,4 @@
+PyYAML
 requests
 flask
 slackclient>=2.1.0

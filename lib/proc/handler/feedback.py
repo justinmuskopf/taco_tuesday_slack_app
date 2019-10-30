@@ -1,5 +1,6 @@
 import os
 
+from config.slack_config import TacoTuesdaySlackConfig
 from lib.domain.feedback import Feedback
 from lib.proc.handler.base import BaseHandler
 from lib.slack_impl.message.feedback import FeedbackMessage
@@ -7,7 +8,7 @@ from lib.slack_impl.modal.feedback import FeedbackModal
 
 
 class FeedbackHandler(BaseHandler):
-    DEBUG_CHANNEL = os.environ['SLACK_DEBUG_CHANNEL']
+    DEBUG_CHANNEL = TacoTuesdaySlackConfig().get_debug_channel()
     RUNNING_FEEDBACK_TYPES = {}
 
     @classmethod

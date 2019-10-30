@@ -1,6 +1,7 @@
 from http import HTTPStatus
 from json import JSONDecodeError
 
+from config.api_config import TacoTuesdayApiConfig
 from lib.domain.domain_error import DomainError
 from lib.domain.employee import Employee
 from lib.domain.full_order import FullOrder
@@ -23,8 +24,8 @@ class NoSuchEmployeeError(TacoTuesdayApiError):
 
 
 class TacoTuesdayApiHandler:
-    API_BASE_URL = os.environ['TT_BASE_API_URL']
-    API_KEY = os.environ['TT_API_KEY']
+    API_BASE_URL = TacoTuesdayApiConfig().get_base_api_url()
+    API_KEY = TacoTuesdayApiConfig().get_api_key()
 
     TACOS = {}
 

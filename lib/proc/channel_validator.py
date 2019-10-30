@@ -6,8 +6,8 @@ from lib.domain.domain_error import DomainError
 
 
 class ChannelValidationError(DomainError):
-    def __init__(self, channel_id: str):
-        super().__init__(ChannelValidator, f'No public or private channel for ID {channel_id}! Is the bot allowed there?')
+    def __init__(self, e: SlackApiError):
+        super().__init__(ChannelValidator, str(e))
 
 
 class ChannelValidator:
@@ -29,7 +29,7 @@ class ChannelValidator:
     def validate(cls, channel_id: str):
         try:
             cls.SlackClient.conversations_info(channel=channel_id)
-        except SlackApiError:
-            ChannelValidationError(channel_id)
+        except SlackApiError as e:
+            ChannelValidationError(e)
 
         return True
