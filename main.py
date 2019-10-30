@@ -6,6 +6,8 @@ from loguru import logger
 import json
 import os
 
+from config.config_parser import TacoTuesdayConfigParser
+from config.system_config import TacoTuesdaySystemConfig
 from lib.api.taco_tuesday_api_handler import TacoTuesdayApiHandler
 from lib.proc.handler.employee import EmployeeHandler
 from lib.proc.handler.error import ErrorHandler
@@ -13,11 +15,9 @@ from lib.proc.handler.interaction import InteractionHandler
 from lib.proc.handler.running_order import RunningOrderHandler
 from lib.proc.handler.view import ViewHandler
 
+TacoTuesdayConfigParser.parse()
 API_HANDLER = TacoTuesdayApiHandler()
-SLACK_BOT_TOKEN = os.environ["SLACK_BOT_TOKEN"]
-LOG_DIR = os.environ['TT_SLACK_LOG_DIR']
-
-IH = InteractionHandler(SLACK_BOT_TOKEN)
+IH = InteractionHandler()
 
 # Flask web server for incoming traffic from Slack
 app = Flask(__name__)
@@ -73,6 +73,6 @@ def message_actions():
 if __name__ == "__main__":
     from pathlib import Path
 
-    logger.add(sink=Path(LOG_DIR, '{time}.log'), rotation="00:00")
+    logger.add(sink=Path(TacoTuesdaySystemConfig().get_log_dir(), '{time}.log'), rotation="00:00")
 
     app.run(host='0.0.0.0')

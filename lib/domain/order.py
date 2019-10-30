@@ -1,6 +1,7 @@
 import os
 import sys
 
+from config.order_config import TacoTuesdayOrderConfig
 from lib.domain.domain_error import DomainError
 from lib.domain.price import Price
 from lib.domain.taco import Taco, NegativeTacoError, ValidTacos, TacoValueError, InvalidTacoTypeError
@@ -24,7 +25,7 @@ class TacoCountError(OrderError):
 
 
 class Order:
-    TAX_RATE: float = 1 + (float(os.environ['TACO_TAX_RATE']) / 100)
+    TAX_RATE: float = 1 + (float(TacoTuesdayOrderConfig().get_tax_rate()) / 100)
 
     def __init__(self):
         self.price = Price()
