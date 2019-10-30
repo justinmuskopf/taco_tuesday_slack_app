@@ -12,6 +12,7 @@ The Taco Tuesday Slack App utilizes the following technologies:
   - [slackclient](https://github.com/slackapi/python-slackclient)
   - [flask](https://github.com/pallets/flask)
   - [certifi](https://pypi.org/project/certifi/)
+  - [PyYaml](https://pyyaml.org/wiki/PyYAMLDocumentation)
 -------
 ### Contribution & Timeline
 Crazy enough to care about something so silly? Feel free to check out the project's progression on its [Kanban](https://github.com/justinmuskopf/taco_tuesday_slack_app/projects/1)!
