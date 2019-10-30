@@ -1,0 +1,11 @@
+api:
+  baseUrl: 'http://website/api/v1'               
+  key: 'my-api-key-is-here'
+slack:
+  botToken: 'slack-bot-token-goes-here'                                                 
+  debugChannel: 'debug-channel'
+order:
+  taxRate: 8.25                                                                                                     
+  maxSingleTaco: 25
+system:                                                                                                             
+  logDir: '/var/log/log_directory/'
