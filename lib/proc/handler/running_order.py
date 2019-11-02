@@ -3,6 +3,7 @@ from loguru import logger
 from slack import WebClient
 from slack.errors import SlackApiError
 
+from config.slack_config import TacoTuesdaySlackConfig
 from lib.api.taco_tuesday_api_handler import TacoTuesdayApiHandler
 from lib.domain.domain_error import DomainError
 from lib.domain.full_order import FullOrder
@@ -35,6 +36,7 @@ class RunningOrderHandler(BaseHandler):
     OrderIsRunning: bool = False
     FirstMessageSent: bool = False
     ChannelId: str = None
+    Testing: bool = False
 
     @classmethod
     def start_order(cls, channel_id: str):
@@ -46,6 +48,7 @@ class RunningOrderHandler(BaseHandler):
         cls.RunningOrder = FullOrder()
         cls.OrderIsRunning = True
         cls.ChannelId = channel_id
+        cls.Testing = channel_id == TacoTuesdaySlackConfig().get_test_channel()
 
     @classmethod
     def end_order(cls):
@@ -88,8 +91,11 @@ class RunningOrderHandler(BaseHandler):
         RunningOrderError.assert_first_message_sent(False)
         RunningOrderError.assert_order_is_running(True)
 
+        # Don't ping people in testing
+        notify_text = f'{"Here" if cls.Testing else "<!here>"} I go, taking orders again!'
+
         response = cls.SlackClient.chat_postMessage(channel=cls.ChannelId,
-                                                    text='<!here> I go, taking orders again!')
+                                                    text=notify_text)
         assert response['ok']
 
         message = RunningOrderMessage()
@@ -130,7 +136,10 @@ class RunningOrderHandler(BaseHandler):
         RunningOrderError.assert_order_is_running(True)
         logger.info('Submitting Running Order!')
 
-        TacoTuesdayApiHandler.submit_order(cls.RunningOrder)
+        if cls.Testing:
+            logger.info('Not submitting order due to testing!')
+        else:
+            TacoTuesdayApiHandler.submit_order(cls.RunningOrder)
 
         logger.debug(f'Submitted Order: {pformat(cls.RunningOrder.get_full_order_dict())}')
 

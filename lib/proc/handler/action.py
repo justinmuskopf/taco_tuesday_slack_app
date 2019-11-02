@@ -1,5 +1,6 @@
 from loguru import logger
 
+from config.slack_config import TacoTuesdaySlackConfig
 from lib.proc.handler.base import BaseHandler
 from lib.proc.handler.employee import EmployeeHandler
 from lib.proc.handler.feedback import FeedbackHandler
@@ -37,8 +38,8 @@ class ActionHandler(BaseHandler):
 
     @staticmethod
     def _handle_button_action(action_id, channel_id, slack_id, trigger_id):
-
-        if not ReadyButton.is_ready_button_action(action_id): return
+        if not ReadyButton.is_ready_button_action(action_id):
+            return
 
         if OrderReadyButton.is_order_button_action_id(action_id):
             if RunningOrderHandler.number_of_orders() == 0:

@@ -4,6 +4,7 @@ api:
 slack:
   botToken: 'slack-bot-token-goes-here'                                                 
   debugChannel: 'debug-channel'
+  testChannel: 'test-channel-name'
 order:
   taxRate: 8.25                                                                                                     
   maxSingleTaco: 25
