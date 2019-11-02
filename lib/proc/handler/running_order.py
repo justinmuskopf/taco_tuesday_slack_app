@@ -53,6 +53,7 @@ class RunningOrderHandler(BaseHandler):
 
     @classmethod
     def end_order(cls):
+        cls.pin_running_order(False)
         cls.OrderIsRunning = False
         cls.FirstMessageSent = False
         cls.RunningOrder = FullOrder()
@@ -100,6 +101,18 @@ class RunningOrderHandler(BaseHandler):
         return len(cls.RunningOrder.individual_orders)
 
     @classmethod
+    def pin_running_order(cls, pinned: bool = False):
+        RunningOrderError.assert_order_is_running(True)
+        call = cls.SlackClient.pins_add if pinned else cls.SlackClient.pins_remove
+
+        response = {'error': 'Unknown'}
+        try:
+            response = call(channel=cls.ChannelId, timestamp=cls.TS)
+            assert response['ok']
+        except AssertionError as e:
+            raise RunningOrderError(f'Failed to remove RunningOrder pin! (Error: {response["error"]}')
+
+    @classmethod
     def send_running_order_message(cls):
         RunningOrderError.assert_first_message_sent(False)
         RunningOrderError.assert_order_is_running(True)
@@ -123,6 +136,8 @@ class RunningOrderHandler(BaseHandler):
             return logger.error(f'ERROR: Invalid response received: {ke}')
 
         logger.info("Created new RunningOrderMessage!")
+
+        cls.pin_running_order(True)
 
         cls.FirstMessageSent = True
 
