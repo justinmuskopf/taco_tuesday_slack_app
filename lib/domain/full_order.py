@@ -16,6 +16,10 @@ class FullOrder(Order):
     def has_employee_order(self, slack_id: str):
         return slack_id in self.individual_orders
 
+    def is_empty(self):
+        logger.debug(f'Checking if I am empty... Individual Orders: {self.individual_orders}, len: {len(self.individual_orders)}')
+        return len(self.individual_orders) == 0
+
     def add_order(self, order: IndividualOrder):
         [self.add(t, order[t])for t in order.tacos]
 

@@ -4,7 +4,7 @@ from lib.slack.text.text import Text
 
 
 class SectionBlock(Block):
-    def __init__(self, text: str, accessory: Accessory = None, fields = None):
+    def __init__(self, text: str, accessory: Accessory = None, fields=None):
         super().__init__('section')
         self.text = Text.get(text, markdown_enabled=True)
         self.accessory = accessory
