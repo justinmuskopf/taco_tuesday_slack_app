@@ -78,6 +78,7 @@ class ActionHandler(BaseHandler):
         for action in actions:
             logger.debug(f'Given Action: {action}')
             if cls._is_button_action(action):
+                if cls.
                 logger.debug(f'Handling accessory action: {action}')
                 slack_id = action_response['user']['id']
                 trigger_id = action_response['trigger_id']

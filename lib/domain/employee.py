@@ -13,7 +13,7 @@ class EmployeeNoSlackIdError(EmployeeError):
 
 
 class Employee:
-    def __init__(self, slack_id: str, full_name: str, nick_name: str = '', api_id: str = None):
+    def __init__(self, slack_id: str, full_name: str, nick_name: str = '', api_id: str = None, admin: bool = False):
         if not self.is_valid_slack_id(slack_id):
             raise EmployeeNoSlackIdError()
 
@@ -23,6 +23,7 @@ class Employee:
         self.slack_id = slack_id
         self.full_name = full_name
         self.nick_name = nick_name
+        self.admin = admin
 
     def __str__(self):
         return f'Id #{self.slack_id}: {self.full_name}'

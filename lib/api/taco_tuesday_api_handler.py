@@ -108,26 +108,34 @@ class TacoTuesdayApiHandler:
             raise TacoTuesdayApiError(f'An unknown error occurred when creating a full order: {e}!')
 
     @classmethod
+    def parse_response_into_employee(cls, employee_dict) -> Employee:
+        if employee_dict is None: raise NoSuchEmployeeError('No employee(s) returned from API!')
+
+        nick_name = None if 'nickName' not in employee_dict else employee_dict['nickName']
+
+        return Employee(slack_id=employee_dict['slackId'],
+                        full_name=employee_dict['fullName'],
+                        nick_name=nick_name,
+                        api_id=employee_dict['id'],
+                        admin=employee_dict['admin'])
+
+    @classmethod
     def get_employee_by_slack_id(cls, slack_id: str) -> Employee:
-        response = cls.do_api_interaction(cls.GET, f'/employees/{slack_id}', params={'apiKey': cls.API_KEY})
-
         try:
-            employee_dict = cls.get_json_from_response(response)
-            if employee_dict is None: raise NoSuchEmployeeError(slack_id)
-
-            assert employee_dict['slackId'] == slack_id
-
-            nick_name = None if 'nickName' not in employee_dict else employee_dict['nickName']
-
-            return Employee(slack_id=slack_id,
-                            full_name=employee_dict['fullName'],
-                            nick_name=nick_name,
-                            api_id=employee_dict['id'])
+            response = cls.do_api_interaction(cls.GET, f'/employees/{slack_id}', params={'apiKey': cls.API_KEY}).json()
+            return cls.parse_response_into_employee(response)
         except KeyError as e:
             logger.debug(f'KeyError: {e}')
             raise NoSuchEmployeeError(slack_id)
         except AssertionError:
             raise TacoTuesdayApiError(f'An employee with a different Slack ID was returned (wanted: {slack_id}, returned: {employee_dict["slackId"]})!')
+
+    @classmethod
+    def get_all_employees(cls) -> [Employee]:
+        response = cls.do_api_interaction(cls.GET, f'/employees', params={'apiKey': cls.API_KEY})
+        employees = [cls.parse_response_into_employee(e) for e in response.json()]
+
+        return employees
 
     @classmethod
     def create_employee(cls, employee: Employee) -> Employee:
