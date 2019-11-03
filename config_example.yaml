@@ -8,5 +8,7 @@ slack:
 order:
   taxRate: 8.25                                                                                                     
   maxSingleTaco: 25
+  taqueriaAddress: '1234 Main St. Reno, Nevada 12345'
+  taqueriaPhoneNumber: '(123)234-5678'
 system:                                                                                                             
   logDir: '/var/log/log_directory/'

@@ -1,3 +1,4 @@
+from config.order_config import TacoTuesdayOrderConfig
 from lib.domain.full_order import FullOrder
 from lib.slack.block.divider import Divider
 from lib.slack.block.section import SectionBlock
@@ -6,6 +7,10 @@ from lib.slack_impl.message.running_order import RunningOrderMessage
 
 
 class CompletedOrderMessage:
+    TAQUERIA_ADDRESS = TacoTuesdayOrderConfig().get_taqueria_address()
+    TAQUERIA_PHONE_NUMBER = TacoTuesdayOrderConfig().get_taqueria_phone_number()
+
+
     def __init__(self, order: FullOrder):
         self.running_message = RunningOrderMessage(order)
 
@@ -23,6 +28,10 @@ class CompletedOrderMessage:
         # Bye bye buttons!
         for block in blocks:
             if 'accessory' in block: block.pop('accessory')
+
+        blocks.append(SectionBlock(text='*Taqueria Garcia*:').get_block())
+        blocks.append(SectionBlock(text=f':earth_africa:: {self.TAQUERIA_ADDRESS}').get_block())
+        blocks.append(SectionBlock(text=f':phone:: {self.TAQUERIA_PHONE_NUMBER}').get_block())
 
         blocks.append(Divider.get())
 
