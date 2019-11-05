@@ -4,6 +4,7 @@ from config.config_parser import TacoTuesdayConfigParser
 class TacoTuesdayOrderConfig(TacoTuesdayConfigParser):
     TaxRate: float = None
     MaxSingleTaco: int = None
+    TaqueriaName: str = None
     TaqueriaAddress: str = None
     TaqueriaPhoneNumber: str = None
 
@@ -12,6 +13,7 @@ class TacoTuesdayOrderConfig(TacoTuesdayConfigParser):
 
         TacoTuesdayOrderConfig.TaxRate = config['taxRate']
         TacoTuesdayOrderConfig.MaxSingleTaco = config['maxSingleTaco']
+        TacoTuesdayOrderConfig.TaqueriaName = config['taqueriaName']
         TacoTuesdayOrderConfig.TaqueriaAddress = config['taqueriaAddress']
         TacoTuesdayOrderConfig.TaqueriaPhoneNumber = config['taqueriaPhoneNumber']
 
@@ -26,3 +28,6 @@ class TacoTuesdayOrderConfig(TacoTuesdayConfigParser):
 
     def get_taqueria_phone_number(self):
         return self.TaqueriaPhoneNumber
+
+    def get_taqueria_name(self):
+        return self.TaqueriaName
