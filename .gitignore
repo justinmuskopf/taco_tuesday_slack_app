@@ -2,8 +2,12 @@
 *.pyc
 __pycache__/
 
-#IntelliJ
+# IntelliJ
 .idea/
 
+# Config
+config.yaml
 
+# Misc
 *.json
+*.sh

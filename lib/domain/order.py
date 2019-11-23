@@ -92,12 +92,12 @@ class Order:
         self.remove(taco_type, self.tacos[taco_type])
 
     def _get_price_based_on_deal(self, pastor_price: float):
-        pastor_total = self.tacos['PASTOR'] * pastor_price
+        pastor_total = self.tacos['pastor'] * pastor_price
 
         return round((self.price + pastor_total) * self.TAX_RATE, 2)
 
     def get_dict(self, pastor_price: float) -> {}:
-        d = {Taco.serialize_type_into_api_key(t): self.tacos[t] for t in self.tacos}
+        d = {t: self.tacos[t] for t in self.tacos}
         d['total'] = self._get_price_based_on_deal(pastor_price).get()
 
         return d

@@ -7,6 +7,7 @@ from lib.domain.employee import Employee
 from lib.domain.full_order import FullOrder
 from lib.domain.taco import Taco, ValidTacos
 from loguru import logger
+from pprint import pformat
 import copy
 import os
 import requests
@@ -59,7 +60,7 @@ class TacoTuesdayApiHandler:
             response = request_method(api_url, headers=headers, params=params, json=body_object)
             assert response.content is not None
 
-            logger.debug(f'Returned from API: {response.content}')
+            logger.debug(f'Returned from API:\n{pformat(cls.get_json_from_response(response))}')
 
             return response
         except Exception as e:
@@ -79,7 +80,7 @@ class TacoTuesdayApiHandler:
         for taco in tacos:
             logger.info(f'Loading taco: {taco}')
             taco_type = taco['type']
-            cls.TACOS[taco_type] = Taco(taco_type=taco_type, price=taco['price'])
+            cls.TACOS[taco_type] = Taco(taco_type=taco_type, name=taco['name'], price=taco['price'])
 
         ValidTacos.set_tacos(copy.deepcopy(cls.TACOS))
 
@@ -94,6 +95,7 @@ class TacoTuesdayApiHandler:
     @classmethod
     def submit_order(cls, order: FullOrder):
         logger.debug('Submitting order to API!')
+
 
         response = cls.do_api_interaction(cls.POST,
                                           '/orders/full',
