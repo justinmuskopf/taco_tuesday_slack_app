@@ -3,10 +3,13 @@ api:
   key: 'my-api-key-is-here'
 slack:
   botToken: 'slack-bot-token-goes-here'                                                 
-  debugChannel: 'debug-channel'
-  testChannel: 'test-channel-name'
+  debugChannel: 'debug-channel-id'
+  testChannel: 'test-channel-id'
 order:
   taxRate: 8.25                                                                                                     
   maxSingleTaco: 25
+  taqueriaName: 'My Favorite Taco Place'
+  taqueriaAddress: '1234 Main St. Reno, Nevada 12345'
+  taqueriaPhoneNumber: '(123)234-5678'
 system:                                                                                                             
   logDir: '/var/log/log_directory/'

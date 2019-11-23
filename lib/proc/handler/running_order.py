@@ -49,7 +49,16 @@ class RunningOrderHandler(BaseHandler):
         cls.RunningOrder = FullOrder()
         cls.OrderIsRunning = True
         cls.ChannelId = channel_id
-        cls.Testing = channel_id == TacoTuesdaySlackConfig().get_test_channel()
+        cls.Testing = cls._is_testing_channel(channel_id)
+
+    @staticmethod
+    def _is_testing_channel(channel_id: str) -> bool:
+        testing_channel = TacoTuesdaySlackConfig().get_test_channel()
+        testing = channel_id == testing_channel
+        logger.debug(f'TESTING MODE {"ENABLED" if testing else "DISABLED"} ({channel_id} vs. {testing_channel})')
+
+        return testing
+
 
     @classmethod
     def end_order(cls):

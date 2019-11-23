@@ -35,9 +35,9 @@ class InvalidTacoTypeError(TacoValueError):
 
 
 class Taco:
-    def __init__(self, taco_type: str, price: float):
+    def __init__(self, taco_type: str, name: str, price: float):
         self.taco_type = taco_type
-        self.name = self.deserialize_type(taco_type)
+        self.name = name
         self.price = Price(price)
 
     def copy(self):
@@ -45,31 +45,7 @@ class Taco:
 
     @staticmethod
     def is_pastor(taco_type: str):
-        return taco_type == 'PASTOR'
-
-    @staticmethod
-    def serialize_type(taco_type: str) -> str:
-        serialized = taco_type.replace(' ', '_').upper()
-        logger.debug(f'Serializing Taco Type: {taco_type} --> {serialized}')
-
-        return serialized
-
-    @staticmethod
-    def deserialize_type(taco_type: str) -> str:
-        words = [w[0].upper() + w[1:].lower() for w in taco_type.split('_')]
-        deserialized = ' '.join(words)
-        logger.debug(f'Deserializing Taco Type: {taco_type} --> {deserialized}')
-
-        return deserialized
-
-    @staticmethod
-    def serialize_type_into_api_key(taco_type: str):
-        InvalidTacoTypeError.assert_type_valid(taco_type)
-        lowered_split = taco_type.lower().split('_')
-
-        camel_case = lowered_split[0] + ''.join([s[0].upper() + s[1:] for s in lowered_split[1:]])
-
-        return camel_case
+        return taco_type == 'pastor'
 
     def __str__(self):
         return f'{self.name} ({str(self.price)})'
