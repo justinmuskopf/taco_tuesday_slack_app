@@ -46,8 +46,8 @@ class FullOrder(Order):
         return copy.deepcopy(self.individual_orders).values()
 
     def get_individual_pastor_price(self) -> float:
-        num_pastor = self.tacos['PASTOR']
-        base_pastor_price = ValidTacos.get_taco_price('PASTOR').get()
+        num_pastor = self.tacos['pastor']
+        base_pastor_price = ValidTacos.get_taco_price('pastor').get()
         if num_pastor < 10:
             return base_pastor_price
 

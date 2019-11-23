@@ -80,7 +80,7 @@ class TacoTuesdayApiHandler:
         for taco in tacos:
             logger.info(f'Loading taco: {taco}')
             taco_type = taco['type']
-            cls.TACOS[taco_type] = Taco(taco_type=taco_type, price=taco['price'])
+            cls.TACOS[taco_type] = Taco(taco_type=taco_type, name=taco['name'], price=taco['price'])
 
         ValidTacos.set_tacos(copy.deepcopy(cls.TACOS))
 
