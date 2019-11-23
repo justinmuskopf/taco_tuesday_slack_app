@@ -96,7 +96,6 @@ class TacoTuesdayApiHandler:
     def submit_order(cls, order: FullOrder):
         logger.debug('Submitting order to API!')
 
-        return
 
         response = cls.do_api_interaction(cls.POST,
                                           '/orders/full',
