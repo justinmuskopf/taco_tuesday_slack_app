@@ -10,6 +10,7 @@ from lib.domain.full_order import FullOrder
 from lib.domain.individual_order import IndividualOrder
 from lib.proc.handler.base import BaseHandler
 from lib.proc.channel_validator import ChannelValidator, ChannelValidationError
+from lib.slack_impl.accessory.employee_ready import EmployeeReadyButton
 from lib.slack_impl.message.cancelled_order import CancelledOrderMessage
 from lib.slack_impl.message.completed_order import CompletedOrderMessage
 from lib.slack_impl.message.running_order import RunningOrderMessage
@@ -85,6 +86,8 @@ class RunningOrderHandler(BaseHandler):
     def remove_order(cls, slack_id: str):
         RunningOrderError.assert_order_is_running(True)
         cls.RunningOrder.remove_employee_order(slack_id)
+        EmployeeReadyButton.remove_employee(slack_id)
+
         if cls.RunningOrder.is_empty():
             cls.cancel_order()
         else:

@@ -16,6 +16,11 @@ class EmployeeReadyButton(ReadyButton):
         return EmployeeReadyButton(slack_id, cls.ReadyEmployees[slack_id]).get_accessory()
 
     @classmethod
+    def remove_employee(cls, slack_id: str):
+        if slack_id not in cls.ReadyEmployees: return
+        cls.ReadyEmployees.pop(slack_id)
+
+    @classmethod
     def set_ready(cls, slack_id: str, ready: bool):
         cls.ReadyEmployees[slack_id] = ready
 
