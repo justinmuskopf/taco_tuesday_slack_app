@@ -118,7 +118,6 @@ class TacoTuesdayApiHandler:
         return Employee(slack_id=employee_dict['slackId'],
                         full_name=employee_dict['fullName'],
                         nick_name=nick_name,
-                        api_id=employee_dict['id'],
                         admin=employee_dict['admin'])
 
     @classmethod
@@ -154,8 +153,6 @@ class TacoTuesdayApiHandler:
             assert employee_dict['fullName'] == employee.full_name
 
             logger.info(f'Created Employee: {employee}!')
-
-            employee.api_id = employee_dict['id']
 
             return employee
         except AssertionError:
