@@ -1,3 +1,4 @@
+import random
 from datetime import datetime
 
 from flask import Flask, request, make_response, jsonify
@@ -29,6 +30,34 @@ def get_arg(_request, key):
 
     return arg
 
+@app.route("/slack/interact/admin", methods=["POST"])
+def admin_slash_command():
+    denials = [
+        "Yeah. Like I'd ever let you do that.",
+        "You do not have access to this command!",
+        "Don't make me tell on you.",
+        "You are not in the sudoers file. This incident will be reported."
+    ]
+
+    denial = random.choice(denials)
+
+    slack_id = get_arg(request, 'user_id')
+    channel_id = get_arg(request, 'channel_id')
+    trigger_id = get_arg(request, 'trigger_id')
+    text = get_arg(request, 'text').lower()
+
+    try:
+        employee = API_HANDLER.get_employee_by_slack_id(slack_id)
+
+        if not employee.admin:
+            return make_response(denial, 200)
+
+        IH.admin(trigger_id)
+
+        return make_response("", 200)
+    except Exception as e:
+        ErrorHandler.handle(e)
+
 
 @app.route("/slack/interact/order", methods=["POST"])
 def order_slash_command():
@@ -52,7 +81,6 @@ def order_slash_command():
         return make_response("", 200)
     except Exception as e:
         return ErrorHandler.handle(e)
-
 
 @app.route("/slack/interact", methods=["POST"])
 def message_actions():

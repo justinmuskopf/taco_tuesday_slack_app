@@ -47,3 +47,7 @@ class InteractionHandler(BaseHandler):
             RunningOrderHandler.start_order(channel_id)
 
         ViewHandler.send_new_taco_order_modal(trigger_id)
+
+    @staticmethod
+    def admin(trigger_id: str):
+        ViewHandler.send_admin_console_modal(trigger_id)

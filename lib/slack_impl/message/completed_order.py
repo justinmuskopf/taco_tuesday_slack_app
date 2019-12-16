@@ -19,7 +19,8 @@ class CompletedOrderMessage:
         "If <@{}> does not call *right now*, the world will explode!",
         "I'm really awkward on the phone... <@{}> will you call?",
         "There will be no tacos until <@{}> calls.",
-        "<!here>, everyone shame <@{}> until they place the order!"
+        "<!here>, everyone shame <@{}> until they place the order!",
+        "<@{}>, Taylor says you need to call the taco place."
     ]
 
     def __init__(self, order: FullOrder):

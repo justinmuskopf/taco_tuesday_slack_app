@@ -11,6 +11,7 @@ from lib.proc.handler.base import BaseHandler
 from lib.proc.handler.feedback import FeedbackHandler
 from lib.proc.handler.running_order import RunningOrderHandler
 from lib.slack.modal.modal import Modal
+from lib.slack_impl.modal.admin_console import AdminConsoleModal
 from lib.slack_impl.modal.feedback import FeedbackModal
 from lib.slack_impl.modal.order_cancel import OrderCancelModal
 from lib.slack_impl.modal.order_submit import OrderSubmitModal
@@ -56,7 +57,7 @@ class ViewHandler(BaseHandler):
 
     @classmethod
     def send_modal(cls, trigger_id: str, modal: Modal):
-        logger.debug(f'Sending Modal: {pformat(modal.get_modal())}')
+        logger.debug(f'Sending Modal: {json.dumps(modal.get_modal())}')
         response = cls.SlackClient.views_open(trigger_id=trigger_id, view=modal.get_modal())
         assert response['ok']
 
@@ -75,3 +76,7 @@ class ViewHandler(BaseHandler):
     @classmethod
     def send_feedback_modal(cls, trigger_id: str):
         cls.send_modal(trigger_id, FeedbackModal())
+
+    @classmethod
+    def send_admin_console_modal(cls, trigger_id: str):
+        cls.send_modal(trigger_id, AdminConsoleModal())

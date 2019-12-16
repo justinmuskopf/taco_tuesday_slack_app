@@ -13,16 +13,16 @@ class EmployeeNoSlackIdError(EmployeeError):
 
 
 class Employee:
-    def __init__(self, slack_id: str, full_name: str, nick_name: str = '', api_id: str = None):
+    def __init__(self, slack_id: str, full_name: str, nick_name: str = '', admin: bool = False):
         if not self.is_valid_slack_id(slack_id):
             raise EmployeeNoSlackIdError()
 
         logger.debug(f'Creating Employee: {full_name} (Nickname: {nick_name}), Slack ID #{slack_id}')
 
-        self.api_id = api_id
         self.slack_id = slack_id
         self.full_name = full_name
         self.nick_name = nick_name
+        self.admin = admin
 
     def __str__(self):
         return f'Id #{self.slack_id}: {self.full_name}'
@@ -40,9 +40,6 @@ class Employee:
             'fullName': self.full_name,
             'slackId': self.slack_id
         }
-
-        if self.api_id:
-            d['id'] = self.api_id
 
         if self.nick_name:
             d['nickName'] = self.nick_name

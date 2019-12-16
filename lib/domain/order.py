@@ -97,8 +97,8 @@ class Order:
         return round((self.price + pastor_total) * self.TAX_RATE, 2)
 
     def get_dict(self, pastor_price: float) -> {}:
-        d = {t: self.tacos[t] for t in self.tacos}
-        d['total'] = self._get_price_based_on_deal(pastor_price).get()
+        d = {'tacos': {t: self.tacos[t] for t in self.tacos},
+             'total': self._get_price_based_on_deal(pastor_price).get()}
 
         return d
 
