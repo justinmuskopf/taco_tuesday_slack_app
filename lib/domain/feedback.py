@@ -29,7 +29,7 @@ class FeedbackError(DomainError):
 
 
 class Feedback:
-    def __init__(self, employee: Employee, feedback_type: str, feedback: str):
+    def __init__(self, employee: Employee, feedback_type: str, feedback: str, channel: str):
         if not ValidFeedbackTypes.is_valid(feedback_type):
             raise FeedbackError(f'Invalid FeedbackType {feedback_type}, Valid: [{ValidFeedbackTypes.FEEDBACK_TYPES}]')
 
@@ -37,10 +37,11 @@ class Feedback:
         self.employee = employee
         self.feedback_type = feedback_type
         self.feedback = feedback
+        self.channel = channel
 
         feedback_string = pformat(self.get_dict())
         if feedback_type == ValidFeedbackTypes.BUG:
-            logger.warn(f'{feedback_type} submitted: {feedback_string}')
+            logger.warning(f'{feedback_type} submitted: {feedback_string}')
         else:
             logger.info(f'{feedback_type} submitted: {feedback_string}')
 

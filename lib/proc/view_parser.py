@@ -7,9 +7,13 @@ from lib.domain.domain_error import DomainError
 from lib.domain.employee import Employee
 from lib.domain.feedback import Feedback
 from lib.proc.handler.employee import EmployeeHandler
+from lib.proc.handler.feedback import FeedbackHandler
 from lib.slack.block.block_error import BlockError
 from lib.domain.individual_order import IndividualOrder
 from lib.slack_impl.block.taco import TacoBlock
+from pprint import pformat
+
+from lib.slack_impl.modal.feedback import FeedbackModal
 
 
 class ViewParserError(DomainError):
@@ -103,7 +107,20 @@ class ViewParser:
     def parse_submission_into_feedback(cls, view_submission: {}) -> Feedback:
         cls.validate_submission(view_submission)
 
-        #feedback_type =
+        view = view_submission['view']
+        if 'callback_id' not in view:
+            raise ViewParserError(f"No callback ID for view submission: [{view}]")
 
+        callback_id = view['callback_id']
+
+        modal_id = FeedbackModal.get_modal_id_from_callback_id(callback_id)
+        input_block_id = FeedbackModal.get_input_block_id(modal_id)
+        input_action_id = FeedbackModal.get_action_id_for_text_block(modal_id)
+
+        feedback_text = view['state']['values'][input_block_id][input_action_id]['value']
+
+        feedback_type = FeedbackHandler.get_type(modal_id)
         employee = cls.get_employee_from_submission(view_submission)
-        #return Feedback(employee, )
+
+        return Feedback(employee, feedback_type, feedback_text, employee.slack_id)
+
