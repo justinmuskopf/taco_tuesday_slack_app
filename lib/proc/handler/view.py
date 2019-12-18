@@ -75,6 +75,9 @@ class ViewHandler(BaseHandler):
 
     @classmethod
     def send_feedback_modal(cls, trigger_id: str):
+        modal = FeedbackModal()
+        FeedbackHandler.register_modal(modal)
+
         cls.send_modal(trigger_id, FeedbackModal())
 
     @classmethod

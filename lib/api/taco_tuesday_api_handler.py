@@ -1,6 +1,8 @@
 from http import HTTPStatus
 from json import JSONDecodeError
 
+from requests.auth import HTTPBasicAuth
+
 from config.api_config import TacoTuesdayApiConfig
 from lib.domain.domain_error import DomainError
 from lib.domain.employee import Employee
@@ -28,6 +30,8 @@ class NoSuchEmployeeError(TacoTuesdayApiError):
 class TacoTuesdayApiHandler:
     API_BASE_URL = TacoTuesdayApiConfig().get_base_api_url()
     API_KEY = TacoTuesdayApiConfig().get_api_key()
+
+    GITHUB_INFO = TacoTuesdayApiConfig().get_github_api_info()
 
     TACOS = {}
 
@@ -89,7 +93,7 @@ class TacoTuesdayApiHandler:
 
     @classmethod
     def force_taco_refresh(cls):
-        logger.warn('Forcing Taco refresh...')
+        logger.warning('Forcing Taco refresh...')
         cls.TACOS = None
         cls.get_tacos_from_api()
 
@@ -157,3 +161,16 @@ class TacoTuesdayApiHandler:
             return employee
         except AssertionError:
             raise TacoTuesdayApiError(f'Failed to create Employee. API Response: {response}, {response.content}')
+
+    @classmethod
+    def create_github_issue(cls, issue_name: str, issue_body: str):
+        r = requests.post(cls.GITHUB_INFO['url'], auth=HTTPBasicAuth(cls.GITHUB_INFO['user'], cls.GITHUB_INFO['token']),
+                          json={"title": issue_name, "body": issue_body})
+
+        if r.status_code != 201:
+            raise TacoTuesdayApiError(f"Could not create Github issue for Feedback: {r.json()['message']}")
+
+        try:
+            return r.json()['html_url']
+        except Exception as e:
+            raise TacoTuesdayApiError(e)

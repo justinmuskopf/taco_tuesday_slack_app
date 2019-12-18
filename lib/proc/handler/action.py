@@ -70,7 +70,7 @@ class ActionHandler(BaseHandler):
 
     @classmethod
     def _is_select_action(cls, action):
-        return action['action_id'] == 'static_select'
+        return action['type'] == 'static_select'
 
     @classmethod
     def _handle_block_actions(cls, action_response):
@@ -88,7 +88,8 @@ class ActionHandler(BaseHandler):
             elif cls._is_select_action(action):
                 action_id = action['action_id']
                 if FeedbackModal.is_feedback_select_action(action_id):
-                    FeedbackHandler.register_type_change(action_id=action_id, new_type=action['text']['text'])
+                    logger.debug(f'Received feedback select action (ID: {action_id})')
+                    FeedbackHandler.register_type_change(action_id=action_id, new_type=action['selected_option']['text']['text'])
 
     @classmethod
     def handle(cls, action: {}):

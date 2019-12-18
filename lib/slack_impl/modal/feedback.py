@@ -15,6 +15,8 @@ class FeedbackModal(Modal):
         self.add_block(self._get_select_section_block())
         self.add_block(InputBlock(label=Label.get('Feedback'),
                                   multiline=True,
+                                  block_id=self.get_input_block_id(self.uuid),
+                                  action_id=self.get_action_id_for_text_block(self.uuid),
                                   hint='Say Something, Anything!').get_block())
 
     def _get_select_section_block(self):
@@ -22,6 +24,10 @@ class FeedbackModal(Modal):
         [select_block.add_option(o) for o in ValidFeedbackTypes.FEEDBACK_TYPES]
 
         return SectionBlock('Type of Feedback', select_block).get_block()
+
+    @classmethod
+    def get_modal_id_from_callback_id(cls, callback_id: str) -> str:
+        return callback_id.replace(cls.CALLBACK_ID + "_", "")
 
     @classmethod
     def is_feedback_submission(cls, callback_id: str):
@@ -41,7 +47,23 @@ class FeedbackModal(Modal):
         return f'feedbackSelect_{uuid}_ActionId'
 
     @classmethod
+    def get_action_id_for_text_block(cls, uuid):
+        return f'feedbackText_{uuid}_ActionId'
+
+    @classmethod
+    def get_input_block_id(cls, uuid):
+        return f'feedbackText_{uuid}_blockId'
+
+    @classmethod
     def get_modal_id_from_select_block_action_id(cls, action_id):
+        return cls.get_modal_id_from_action_id(action_id)
+
+    @classmethod
+    def get_modal_id_from_text_box_action_id(cls, action_id):
+        return cls.get_modal_id_from_action_id(action_id)
+
+    @classmethod
+    def get_modal_id_from_action_id(cls, action_id):
         split = action_id.split('_')
         assert len(split) == 3
 
